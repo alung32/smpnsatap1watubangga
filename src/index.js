@@ -167,7 +167,6 @@ function validCredentials(email, password) {
     password.length <= 128;
 }
 
-
 async function requireLogin(request, env) {
   const session = await readSession(
     request,
