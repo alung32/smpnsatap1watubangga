@@ -1,1 +1,182 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Administrator - SMP Negeri Satap 1 Watubangga</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#eef4fb;
+ color:#17345b;
+ min-height:100vh;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ padding:20px
+}
+.container{
+ width:100%;max-width:430px;
+ background:white;padding:32px;
+ border-radius:16px;
+ box-shadow:0 10px 35px #16365b20
+}
+.logo{text-align:center;margin-bottom:22px}
+.logo img{width:85px;height:85px;object-fit:contain}
+h2{text-align:center;margin:8px 0}
+.subtitle{text-align:center;color:#718096;font-size:13px;margin-bottom:25px}
+label{display:block;font-weight:bold;font-size:13px;margin:15px 0 7px}
+input{
+ width:100%;padding:13px;
+ border:1px solid #ccd6e3;border-radius:8px;
+ font-size:15px
+}
+button{
+ width:100%;padding:13px;margin-top:20px;
+ border:0;border-radius:8px;
+ background:#1266b3;color:white;
+ font-size:15px;font-weight:bold;cursor:pointer
+}
+button:hover{background:#09477f}
+.message{font-size:13px;margin-top:15px;text-align:center}
+.links{text-align:center;margin-top:20px;font-size:13px}
+.links a{color:#1266b3;cursor:pointer}
+.hidden{display:none}
+</style>
+</head>
+<body>
+
+<div class="container">
+ <div class="logo">
+  <img src="/satap.png" alt="Logo Sekolah">
+ </div>
+
+ <h2>ADMINISTRATOR</h2>
+ <div class="subtitle">
+  SMP NEGERI SATAP 1 WATUBANGGA
+ </div>
+
+ <form id="loginForm">
+  <label>Email Administrator</label>
+  <input type="email" id="email" required
+   placeholder="Masukkan email">
+
+  <label>Password</label>
+  <input type="password" id="password"
+   required placeholder="Masukkan password">
+
+  <button type="submit">LOGIN ADMINISTRATOR</button>
+ </form>
+
+ <div id="message" class="message"></div>
+
+ <div class="links">
+  <a id="setupLink">Aktivasi akun Kepala Sekolah</a>
+ </div>
+
+ <form id="setupForm" class="hidden">
+  <hr>
+  <h3>Registrasi Awal Kepala Sekolah</h3>
+
+  <label>Kode Aktivasi (Bootstrap Secret)</label>
+  <input type="password" id="bootstrapSecret" required>
+
+  <label>Email Kepala Sekolah</label>
+  <input type="email" id="setupEmail" required>
+
+  <label>Password Baru (minimal 12 karakter)</label>
+  <input type="password" id="setupPassword"
+   minlength="12" maxlength="128" required>
+
+  <button type="submit">BUAT AKUN KEPALA SEKOLAH</button>
+
+  <div class="links">
+   <a id="backLink">Kembali ke login</a>
+  </div>
+ </form>
+</div>
+
+<script>
+const message = document.getElementById("message");
+
+document.getElementById("setupLink").onclick = () => {
+ document.getElementById("loginForm").classList.add("hidden");
+ document.getElementById("setupForm").classList.remove("hidden");
+ document.getElementById("setupLink").classList.add("hidden");
+ message.textContent = "";
+};
+
+document.getElementById("backLink").onclick = () => {
+ document.getElementById("setupForm").classList.add("hidden");
+ document.getElementById("loginForm").classList.remove("hidden");
+ document.getElementById("setupLink").classList.remove("hidden");
+ message.textContent = "";
+};
+
+document.getElementById("setupForm").onsubmit = async e => {
+ e.preventDefault();
+ message.textContent = "Memproses registrasi...";
+
+ try {
+  const response = await fetch("/api/auth/bootstrap", {
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({
+    bootstrapSecret:document.getElementById("bootstrapSecret").value,
+    email:document.getElementById("setupEmail").value,
+    password:document.getElementById("setupPassword").value
+   })
+  });
+
+  const data = await response.json();
+  message.textContent = data.message || "Registrasi selesai";
+
+  if(data.success){
+   document.getElementById("setupForm").reset();
+  }
+ } catch(error) {
+  message.textContent = "Koneksi server bermasalah.";
+ }
+};
+
+document.getElementById("loginForm").onsubmit = async e => {
+ e.preventDefault();
+ message.textContent = "Memeriksa akun...";
+
+ try {
+  const response = await fetch("/api/auth/login", {
+   method:"POST",
+   headers:{"Content-Type":"application/json"},
+   credentials:"same-origin",
+   body:JSON.stringify({
+    email:document.getElementById("email").value,
+    password:document.getElementById("password").value
+   })
+  });
+
+  const data = await response.json();
+
+  if(!data.success){
+   message.textContent = data.message || "Login gagal.";
+   return;
+  }
+
+  if(data.user.role !== "kepala_sekolah" &&
+     data.user.role !== "operator"){
+   message.textContent = "Hak akses tidak valid.";
+   return;
+  }
+
+  window.location.href = "/dashboard.html";
+
+ } catch(error) {
+  message.textContent = "Tidak dapat menghubungi server.";
+ }
+};
+</script>
+</body>
+</html>
+
