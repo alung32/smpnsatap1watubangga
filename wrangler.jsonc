@@ -1,9 +1,21 @@
 
 {
+  "$schema": "https://www.schemastore.org/wrangler.json",
   "name": "smpnsatap1watubangga",
+  "main": "./src/index.js",
   "compatibility_date": "2026-11-26",
   "assets": {
-    "directory": "./"
-  }
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/api/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "db-smpnsatap1",
+      "database_id": "7d73b870-2368-4a6c-a513-5f530c9c220f"
+    }
+  ]
 }
-
