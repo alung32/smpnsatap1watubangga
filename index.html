@@ -4,144 +4,222 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Website resmi SMP Negeri Satap 1 Watubangga">
 <title>SMP Negeri Satap 1 Watubangga</title>
 <style>
+:root{
+ --navy:#092f60;--blue:#1266b3;--light:#eaf3fc;
+ --white:#fff;--text:#24364b;--muted:#718096;
+}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:Arial,sans-serif;color:#243247;background:#f5f8fc;line-height:1.7}
-header{background:#073b78;color:white;padding:16px 7%;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
-.brand{font-size:19px;font-weight:bold}
-.brand small{display:block;font-size:12px;font-weight:normal;color:#c8ddf7}
-nav{display:flex;gap:17px;flex-wrap:wrap}
-nav a{color:white;text-decoration:none;font-size:14px}
-.hero{padding:85px 8%;background:linear-gradient(120deg,#073b78,#1675c5);color:white;text-align:center}
-.hero h1{font-size:clamp(28px,5vw,46px);line-height:1.2;margin-bottom:15px}
-.hero p{max-width:650px;margin:auto;color:#e4efff}
-.btn{display:inline-block;margin-top:25px;padding:12px 24px;background:#ffca55;color:#15365b;text-decoration:none;border-radius:7px;font-weight:bold}
-section{padding:55px 8%;scroll-margin-top:20px}
-.heading{text-align:center;margin-bottom:30px}
-.heading h2{color:#073b78;font-size:28px}
-.heading p{color:#68788c}
+body{font-family:Arial,sans-serif;color:var(--text);line-height:1.7;background:#f7faff}
+a{text-decoration:none;color:inherit}
+header{background:white;position:sticky;top:0;z-index:10;
+ box-shadow:0 3px 15px #092f6012}
+.top{max-width:1180px;margin:auto;padding:12px 22px;
+ display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:58px;height:58px;object-fit:contain}
+.brand h1{font-size:17px;color:var(--navy);line-height:1.35}
+.brand p{font-size:11px;color:var(--muted)}
+nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+nav a{font-size:13px;font-weight:bold;color:#334b68}
+nav a:hover{color:var(--blue)}
+.hero{background:linear-gradient(120deg,#082c59,#1269b8);
+ color:white;padding:95px 22px;text-align:center}
+.hero .tag{font-size:12px;letter-spacing:2px;color:#c9e5ff}
+.hero h2{font-size:clamp(29px,5vw,48px);line-height:1.2;
+ margin:17px auto;max-width:850px}
+.hero p{max-width:680px;margin:auto;color:#e0edfc}
+.btn{display:inline-block;background:#ffcf63;color:#17385c;
+ padding:12px 23px;border-radius:7px;font-weight:bold;margin-top:25px}
+.btn:hover{background:white}
+section{padding:65px 22px;scroll-margin-top:90px}
+.container{max-width:1120px;margin:auto}
+.heading{text-align:center;margin-bottom:35px}
+.heading h2{font-size:29px;color:var(--navy)}
+.heading p{color:var(--muted);font-size:14px}
 .about{background:white}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.card{background:white;border-radius:12px;padding:23px;box-shadow:0 4px 18px #12305012}
-.card h3{color:#07509a;margin-bottom:9px}
-.about .card{background:#f5f8fc}
-.news{background:#eef4fb}
-.gallery-item{height:155px;border-radius:10px;background:#dce9f8;display:grid;place-items:center;color:#42678f;text-align:center;padding:15px}
-.contact{background:#073b78;color:white}
+.aboutbox{background:#f1f6fc;border-radius:14px;padding:30px;
+ border-left:5px solid var(--blue)}
+.aboutbox h3{color:var(--navy);margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
+.card{background:white;padding:24px;border-radius:13px;
+ box-shadow:0 5px 22px #17385c0d;border:1px solid #e9eff7}
+.card .symbol{font-size:27px;margin-bottom:12px}
+.card h3{color:var(--navy);font-size:18px;margin-bottom:9px}
+.card p{font-size:14px;color:var(--muted)}
+.news{background:var(--light)}
+.notice{border-left:4px solid var(--blue)}
+.gallery{background:white}
+.photo{height:175px;border-radius:10px;background:linear-gradient(135deg,#d9e9fa,#eef5fd);
+ display:grid;place-items:center;color:#416589;font-size:14px;text-align:center;padding:15px}
+.teacher{background:var(--light)}
+.teacherbox{text-align:center}
+.teacherbox .avatar{width:85px;height:85px;border-radius:50%;
+ margin:0 auto 15px;background:#d9e9fa;display:grid;place-items:center;font-size:34px}
+.contact{background:var(--navy);color:white}
 .contact .heading h2,.contact .heading p{color:white}
-footer{text-align:center;background:#052b57;color:#d9e8fa;padding:20px;font-size:13px}
-@media(max-width:600px){header{justify-content:center;text-align:center}nav{justify-content:center;gap:12px}.hero{padding:65px 6%}section{padding:42px 6%}}
+.contact .card{color:var(--text)}
+footer{background:#061f40;color:#d7e7fa;text-align:center;padding:25px;font-size:13px}
+footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
+@media(max-width:760px){
+ .top{flex-direction:column}
+ nav{justify-content:center;gap:12px}
+ nav a{font-size:12px}
+ .hero{padding:70px 20px}
+ section{padding:48px 18px}
+}
 </style>
 </head>
 <body>
 
 <header>
+ <div class="top">
   <div class="brand">
-    SMP NEGERI SATAP 1 WATUBANGGA
-    <small>Website Resmi Sekolah</small>
+   <img src="satap.png" alt="Logo SMP Negeri Satap 1 Watubangga">
+   <div>
+    <h1>SMP NEGERI SATAP 1 WATUBANGGA</h1>
+    <p>Website Resmi Sekolah</p>
+   </div>
   </div>
   <nav>
-    <a href="#beranda">Beranda</a>
-    <a href="#profil">Profil</a>
-    <a href="#berita">Berita</a>
-    <a href="#pengumuman">Pengumuman</a>
-    <a href="#galeri">Galeri</a>
-    <a href="#guru">Guru</a>
-    <a href="#kontak">Kontak</a>
+   <a href="#beranda">Beranda</a>
+   <a href="#profil">Profil</a>
+   <a href="#berita">Berita</a>
+   <a href="#pengumuman">Pengumuman</a>
+   <a href="#galeri">Galeri</a>
+   <a href="#guru">Guru</a>
+   <a href="#kontak">Kontak</a>
   </nav>
+ </div>
 </header>
 
 <main>
 <section class="hero" id="beranda">
-  <h1>Selamat Datang di<br>SMP Negeri Satap 1 Watubangga</h1>
-  <p>Website resmi sekolah sebagai media informasi, komunikasi, publikasi kegiatan, dan layanan pendidikan.</p>
-  <a class="btn" href="#profil">Kenali Sekolah Kami</a>
+ <div class="container">
+  <p class="tag">SELAMAT DATANG DI WEBSITE RESMI SEKOLAH</p>
+  <h2>SMP NEGERI SATAP 1 WATUBANGGA</h2>
+  <p>Membangun generasi berkarakter, berprestasi, berpengetahuan,
+  dan siap menghadapi masa depan.</p>
+  <a class="btn" href="#profil">Jelajahi Sekolah</a>
+ </div>
 </section>
 
 <section class="about" id="profil">
+ <div class="container">
   <div class="heading">
-    <h2>Profil Sekolah</h2>
-    <p>Mengenal lebih dekat sekolah kami</p>
+   <h2>Profil Sekolah</h2>
+   <p>Mengenal lebih dekat sekolah kami</p>
   </div>
-  <div class="card">
-    <h3>SMP Negeri Satap 1 Watubangga</h3>
-    <p>Selamat datang di website resmi SMP Negeri Satap 1 Watubangga. Melalui website ini, kami menyajikan informasi tentang profil sekolah, kegiatan peserta didik, berita, pengumuman, tenaga pendidik, dan berbagai informasi pendidikan.</p>
-    <p>Informasi alamat, sejarah, visi, misi, dan identitas sekolah dapat dilengkapi pada bagian pengelolaan berikutnya.</p>
+  <div class="aboutbox">
+   <h3>SMP Negeri Satap 1 Watubangga</h3>
+   <p>Selamat datang di website resmi SMP Negeri Satap 1 Watubangga.
+   Website ini menjadi media informasi dan komunikasi bagi peserta didik,
+   orang tua, pendidik, tenaga kependidikan, alumni, dan masyarakat.</p>
+   <p>Informasi sejarah, visi, misi, dan identitas sekolah akan dilengkapi
+   berdasarkan data resmi sekolah.</p>
   </div>
+ </div>
 </section>
 
-<section class="news" id="berita">
+<section id="berita">
+ <div class="container">
   <div class="heading">
-    <h2>Berita Sekolah</h2>
-    <p>Informasi dan kegiatan terbaru sekolah</p>
+   <h2>Berita Sekolah</h2>
+   <p>Informasi kegiatan dan prestasi sekolah</p>
   </div>
   <div class="grid">
-    <article class="card">
-      <h3>Kegiatan Sekolah</h3>
-      <p>Tambahkan berita kegiatan sekolah di bagian ini.</p>
-    </article>
-    <article class="card">
-      <h3>Prestasi Peserta Didik</h3>
-      <p>Publikasikan prestasi dan pencapaian peserta didik.</p>
-    </article>
-    <article class="card">
-      <h3>Kegiatan Pembelajaran</h3>
-      <p>Bagikan informasi kegiatan pembelajaran di sekolah.</p>
-    </article>
+   <article class="card">
+    <div class="symbol">📰</div>
+    <h3>Berita Kegiatan Sekolah</h3>
+    <p>Informasi kegiatan sekolah akan ditampilkan di sini.</p>
+   </article>
+   <article class="card">
+    <div class="symbol">🏆</div>
+    <h3>Prestasi Peserta Didik</h3>
+    <p>Publikasi prestasi dan pencapaian peserta didik.</p>
+   </article>
+   <article class="card">
+    <div class="symbol">📚</div>
+    <h3>Kegiatan Pembelajaran</h3>
+    <p>Dokumentasi kegiatan belajar dan program pendidikan.</p>
+   </article>
   </div>
+ </div>
 </section>
 
-<section id="pengumuman">
+<section class="news" id="pengumuman">
+ <div class="container">
   <div class="heading">
-    <h2>Pengumuman</h2>
-    <p>Informasi penting untuk warga sekolah</p>
+   <h2>Pengumuman</h2>
+   <p>Informasi penting untuk warga sekolah</p>
   </div>
-  <div class="card">
-    <h3>Informasi Sekolah</h3>
-    <p>Pengumuman sekolah akan ditampilkan di sini. Silakan lengkapi dengan informasi resmi yang berlaku.</p>
+  <div class="card notice">
+   <h3>Informasi Sekolah</h3>
+   <p>Pengumuman resmi sekolah akan ditampilkan di bagian ini.</p>
   </div>
+ </div>
 </section>
 
-<section class="news" id="galeri">
+<section class="gallery" id="galeri">
+ <div class="container">
   <div class="heading">
-    <h2>Galeri Foto</h2>
-    <p>Dokumentasi kegiatan SMP Negeri Satap 1 Watubangga</p>
+   <h2>Galeri Sekolah</h2>
+   <p>Dokumentasi aktivitas SMP Negeri Satap 1 Watubangga</p>
   </div>
   <div class="grid">
-    <div class="gallery-item">Foto Kegiatan 1</div>
-    <div class="gallery-item">Foto Kegiatan 2</div>
-    <div class="gallery-item">Foto Kegiatan 3</div>
+   <div class="photo">Foto Gedung Sekolah</div>
+   <div class="photo">Foto Kegiatan Pembelajaran</div>
+   <div class="photo">Foto Kegiatan Sekolah</div>
   </div>
+ </div>
 </section>
 
-<section id="guru">
+<section class="teacher" id="guru">
+ <div class="container">
   <div class="heading">
-    <h2>Data Guru dan Tenaga Kependidikan</h2>
-    <p>Mengenal pendidik dan tenaga kependidikan sekolah</p>
+   <h2>Guru dan Tenaga Kependidikan</h2>
+   <p>Para pendidik dan tenaga kependidikan sekolah</p>
   </div>
-  <div class="card">
-    <p>Daftar nama, jabatan, foto, dan informasi guru akan ditampilkan di halaman ini setelah data resmi dimasukkan.</p>
+  <div class="grid">
+   <div class="card teacherbox">
+    <div class="avatar">👩‍🏫</div>
+    <h3>Data Guru</h3>
+    <p>Daftar nama dan foto guru akan dilengkapi menggunakan data resmi.</p>
+   </div>
+   <div class="card teacherbox">
+    <div class="avatar">👨‍🏫</div>
+    <h3>Tenaga Kependidikan</h3>
+    <p>Informasi tenaga kependidikan sekolah akan ditampilkan di sini.</p>
+   </div>
   </div>
+ </div>
 </section>
 
 <section class="contact" id="kontak">
+ <div class="container">
   <div class="heading">
-    <h2>Hubungi Kami</h2>
-    <p>Informasi dan komunikasi dengan sekolah</p>
+   <h2>Hubungi Kami</h2>
+   <p>Informasi dan komunikasi dengan sekolah</p>
   </div>
-  <div class="card" style="color:#243247">
-    <p><b>Nama:</b> SMP Negeri Satap 1 Watubangga</p>
-    <p><b>Alamat:</b> Lengkapi alamat resmi sekolah</p>
-    <p><b>Email:</b> Lengkapi email resmi sekolah</p>
-    <p><b>Telepon:</b> Lengkapi nomor kontak sekolah</p>
+  <div class="card">
+   <p><b>Nama Sekolah:</b> SMP Negeri Satap 1 Watubangga</p>
+   <p><b>Alamat:</b> Akan dilengkapi dengan alamat resmi sekolah.</p>
+   <p><b>Email:</b> Akan dilengkapi.</p>
+   <p><b>Telepon:</b> Akan dilengkapi.</p>
   </div>
+ </div>
 </section>
 </main>
 
 <footer>
-  © 2026 SMP Negeri Satap 1 Watubangga. Hak Cipta Dilindungi.
+ <img src="satap.png" alt="Logo sekolah">
+ <p><b>SMP NEGERI SATAP 1 WATUBANGGA</b></p>
+ <p>Website Resmi Sekolah</p>
+ <p>© 2026 SMP Negeri Satap 1 Watubangga. Hak cipta dilindungi.</p>
 </footer>
+
 </body>
 </html>
