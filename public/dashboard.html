@@ -1,1 +1,136 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#123d70">
+<title>Dashboard Administrator | SMP Negeri Satap 1 Watubangga</title>
+<style>
+:root{--navy:#123d70;--blue:#1769aa;--ink:#193650;--muted:#71839a;--line:#e4ebf2;--bg:#f4f7fb;--red:#bd3948;--green:#16865b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,"Segoe UI",Arial,sans-serif}button,input{font:inherit}button{cursor:pointer}
+.sidebar{position:fixed;inset:0 auto 0 0;width:258px;background:white;border-right:1px solid var(--line);padding:20px 15px;display:flex;flex-direction:column;z-index:10;transition:.2s}
+.brand{display:flex;align-items:center;gap:11px;padding:5px 8px 22px;border-bottom:1px solid var(--line)}.brand img{width:45px;height:45px;object-fit:contain}.brand b{font-size:12px;line-height:1.4;color:var(--navy)}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.navlabel{padding:22px 11px 8px;font-size:10px;letter-spacing:1.2px;color:#9aa8b8;font-weight:800}.nav{display:grid;gap:4px}.nav button{border:0;background:transparent;text-align:left;padding:11px 12px;border-radius:9px;color:#5d7087;font-size:13px;font-weight:650}.nav button:hover,.nav button.active{background:#eaf3fb;color:var(--blue)}.nav button.active{font-weight:800}.ico{display:inline-block;width:26px;font-size:15px}
+.sideuser{margin-top:auto;border-top:1px solid var(--line);padding:16px 7px 4px;display:flex;align-items:center;gap:10px}.avatar{width:35px;height:35px;border-radius:11px;background:#eaf3fb;color:var(--blue);display:grid;place-items:center;font-weight:800}.sideuser b{display:block;font-size:11px;max-width:160px;overflow:hidden;text-overflow:ellipsis}.sideuser small{color:var(--muted);font-size:10px}
+.main{margin-left:258px;min-height:100vh}.topbar{height:72px;background:white;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:0 30px}.crumb{font-size:12px;color:var(--muted)}.crumb b{color:var(--ink)}.topright{display:flex;align-items:center;gap:12px}.status{font-size:11px;color:var(--muted);background:#f6f9fc;padding:8px 11px;border-radius:20px}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#aab6c4;margin-right:6px}.dot.ok{background:#1ca36a}.dot.bad{background:#d44b58}.logout{background:white;border:1px solid #f0d9dc;color:var(--red);border-radius:8px;padding:9px 13px;font-size:12px;font-weight:750}.hamb{display:none;background:white;border:1px solid var(--line);border-radius:8px;padding:7px 10px}
+.content{max-width:1450px;margin:auto;padding:29px 30px 45px}.head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:22px}.eyebrow{font-size:10px;letter-spacing:1.3px;color:var(--blue);font-weight:850;margin-bottom:7px}h1{font-size:25px;margin:0;color:#173b61}.sub{font-size:12px;color:var(--muted);margin:7px 0 0}.date{font-size:11px;color:var(--muted);background:white;border:1px solid var(--line);padding:10px 12px;border-radius:9px;white-space:nowrap}
+.welcome{background:linear-gradient(110deg,#123d70,#1769aa 72%,#2c88c5);color:white;padding:26px 29px;border-radius:16px;margin-bottom:19px;box-shadow:0 10px 25px #163b6112}.welcome small{font-size:10px;letter-spacing:1.3px;opacity:.8;font-weight:800}.welcome h2{font-size:21px;margin:8px 0}.welcome p{font-size:12px;margin:0;opacity:.88}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:19px}.stat,.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:18px;box-shadow:0 3px 14px #173b6108}.stat label{font-size:11px;color:var(--muted)}.stat strong{display:block;font-size:24px;margin:12px 0 4px;color:#1a3d61}.stat small{font-size:10px;color:#96a3b1}
+.panel{margin-bottom:17px}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:15px}.panel h3{font-size:15px;margin:0;color:#1a3e64}.panelhead p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.quickgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}.quick{background:white;border:1px solid var(--line);border-radius:11px;text-align:left;padding:14px;color:var(--ink)}.quick:hover{border-color:#b8d2e8;background:#f9fcff}.quick span{font-size:18px}.quick b{display:block;font-size:12px;margin:8px 0 3px}.quick small{font-size:10px;color:var(--muted)}
+.notice{display:flex;gap:10px;padding:12px 14px;background:#fff8e9;border:1px solid #f0e1bb;color:#805c1b;border-radius:10px;font-size:11px;line-height:1.55;margin-bottom:15px}.btn{border:0;border-radius:8px;background:var(--blue);color:white;padding:10px 14px;font-size:12px;font-weight:750}.btn:hover{background:#10588f}.btn.secondary{background:#edf4fa;color:var(--blue);border:1px solid #dbe8f3}.btn.danger{background:#fff1f2;color:var(--red);border:1px solid #f3dadd}.btn:disabled{opacity:.55;cursor:not-allowed}
+table{width:100%;border-collapse:collapse;min-width:550px}th{text-align:left;background:#f8fafc;color:#8796a8;font-size:10px;text-transform:uppercase;letter-spacing:.5px;padding:12px}td{padding:13px;border-bottom:1px solid #edf1f5;font-size:12px;color:#40566e}tr:last-child td{border-bottom:0}.tag{display:inline-block;padding:5px 8px;border-radius:20px;background:#eef3fb;color:#3268a2;font-size:10px;font-weight:750}.tablewrap{overflow-x:auto}.empty{text-align:center;padding:32px;color:var(--muted);font-size:12px}.empty span{display:block;font-size:27px;margin-bottom:8px}
+.featuregrid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.feature{border:1px solid var(--line);border-radius:10px;padding:13px;display:flex;gap:12px;align-items:center}.feature .symbol{width:35px;height:35px;border-radius:10px;background:#edf5fc;display:grid;place-items:center}.feature b{font-size:12px;display:block}.feature small{font-size:10px;color:var(--muted);display:block;margin-top:4px}
+.field{display:grid;gap:6px;margin:12px 0}.field label{font-size:11px;font-weight:750}.field input{padding:11px;border:1px solid #d8e2ec;border-radius:8px;font-size:12px;outline:none}.field input:focus{border-color:#6ba6d4;box-shadow:0 0 0 3px #eaf4fc}.hint{font-size:10px;color:var(--muted)}
+.modalbg{display:none;position:fixed;inset:0;background:#0d233b77;z-index:30;align-items:center;justify-content:center;padding:18px}.modalbg.show{display:flex}.modal{background:white;border-radius:15px;padding:22px;width:min(100%,430px);box-shadow:0 20px 60px #0003}.modal h3{margin:0 0 6px;font-size:17px}.modal p{font-size:11px;color:var(--muted);margin:0 0 16px}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:17px}
+.toast{display:none;position:fixed;right:20px;bottom:20px;background:#173b61;color:white;padding:12px 15px;border-radius:9px;z-index:50;font-size:12px;max-width:90vw}.toast.show{display:block}.toast.error{background:#9f2937}.hidden{display:none!important}.footer{text-align:center;color:#9aa7b6;font-size:10px;padding:20px}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:740px){.sidebar{transform:translateX(-105%);box-shadow:0 8px 30px #123d7022}.sidebar.open{transform:translateX(0)}.main{margin-left:0}.hamb{display:block}.topbar{height:64px;padding:0 14px}.content{padding:21px 14px 35px}.head{flex-direction:column}.date,.status{display:none}.quickgrid{grid-template-columns:repeat(2,1fr)}.welcome{padding:22px}.featuregrid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><img src="/satap.png" alt="Logo sekolah" onerror="this.hidden=true"><div><b>SMP NEGERI SATAP 1<br>WATUBANGGA</b><small>Panel Administrator</small></div></div>
+ <div class="navlabel">MENU UTAMA</div>
+ <nav class="nav">
+  <button class="active" data-page="overview"><span class="ico">▦</span>Dashboard</button>
+  <button data-page="guru"><span class="ico">♙</span>Data Guru</button>
+  <button data-page="siswa"><span class="ico">♧</span>Data Siswa</button>
+  <button data-page="berita"><span class="ico">▤</span>Berita Sekolah</button>
+  <button data-page="pengumuman"><span class="ico">◉</span>Pengumuman</button>
+  <button data-page="galeri"><span class="ico">▧</span>Galeri</button>
+ </nav>
+ <div class="navlabel">ADMINISTRASI</div>
+ <nav class="nav"><button id="operatorNav" data-page="operators"><span class="ico">♙</span>Akun Operator</button><button data-page="settings"><span class="ico">⚙</span>Pengaturan</button></nav>
+ <div class="sideuser"><div class="avatar" id="avatar">A</div><div><b id="sideEmail">Memeriksa sesi...</b><small id="sideRole">Administrator</small></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><div style="display:flex;align-items:center;gap:13px"><button class="hamb" id="menuToggle">☰</button><div class="crumb">SMP Negeri Satap 1 Watubangga / <b id="crumb">Dashboard</b></div></div><div class="topright"><div class="status"><i class="dot" id="backendDot"></i><span id="backendStatus">Memeriksa backend</span></div><button class="logout" id="logout">Keluar ↗</button></div></header>
+<div class="content">
+<section class="page" id="page-overview">
+ <div class="head"><div><div class="eyebrow">ADMINISTRATOR PANEL</div><h1>Dashboard</h1><p class="sub">Ringkasan pengelolaan Website SMP Negeri Satap 1 Watubangga.</p></div><div class="date" id="date"></div></div>
+ <div class="welcome"><small>SELAMAT DATANG KEMBALI</small><h2 id="welcome">Administrator Sekolah</h2><p>Kelola informasi dan layanan digital sekolah dari satu tempat.</p></div>
+ <div class="stats">
+  <div class="stat"><label>Status Website</label><strong>Aktif</strong><small>Worker merespons permintaan</small></div>
+  <div class="stat"><label>Status Database</label><strong id="dbStat">Memeriksa</strong><small>Koneksi D1 melalui API health</small></div>
+  <div class="stat"><label>Peran Akun</label><strong id="roleStat">—</strong><small>Hak akses akun saat ini</small></div>
+  <div class="stat"><label>Akun Operator</label><strong id="operatorCount">—</strong><small id="operatorNote">Khusus Kepala Sekolah</small></div>
+ </div>
+ <div class="panel"><div class="panelhead"><div><h3>Akses Cepat</h3><p>Pilih bagian website yang ingin dikelola.</p></div></div><div class="quickgrid">
+  <button class="quick" data-goto="guru"><span>♙</span><b>Data Guru</b><small>Profil dan informasi pendidik</small></button>
+  <button class="quick" data-goto="siswa"><span>♧</span><b>Data Siswa</b><small>Informasi peserta didik</small></button>
+  <button class="quick" data-goto="berita"><span>▤</span><b>Berita Sekolah</b><small>Publikasi kegiatan sekolah</small></button>
+  <button class="quick" data-goto="pengumuman"><span>◉</span><b>Pengumuman</b><small>Informasi resmi sekolah</small></button>
+  <button class="quick" data-goto="galeri"><span>▧</span><b>Galeri</b><small>Dokumentasi kegiatan</small></button>
+  <button class="quick" data-goto="operators"><span>♙</span><b>Akun Operator</b><small>Kelola akses pengelola website</small></button>
+ </div></div>
+ <div class="notice">ⓘ <div><b>Informasi integrasi:</b> autentikasi dan manajemen operator telah terhubung ke backend. Modul guru, siswa, berita, pengumuman, dan galeri memerlukan API serta tabel database sebelum data dapat disimpan.</div></div>
+</section>
+<section class="page hidden" id="page-operators">
+ <div class="head"><div><div class="eyebrow">ADMINISTRASI AKUN</div><h1>Akun Operator</h1><p class="sub">Kelola akun operator yang membantu administrasi website sekolah.</p></div><button class="btn" id="addOperator">＋ Tambah Operator</button></div>
+ <div class="notice">ⓘ <div>Hanya akun dengan peran <b>kepala_sekolah</b> yang dapat melihat, membuat, dan menghapus akun operator. Password minimal 12 karakter.</div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Daftar Operator</h3><p id="operatorSubtitle">Memuat daftar akun...</p></div><button class="btn secondary" id="refresh">↻ Muat Ulang</button></div><div class="tablewrap" id="operatorTable"><div class="empty">Memuat data operator...</div></div></div>
+</section>
+<section class="page hidden" id="page-feature">
+ <div class="head"><div><div class="eyebrow">PENGELOLAAN WEBSITE</div><h1 id="featureTitle"></h1><p class="sub" id="featureSub"></p></div></div>
+ <div class="notice">ⓘ <div><b>Modul belum terhubung ke backend.</b> Backend saat ini belum menyediakan endpoint untuk bagian ini. Halaman ini belum menyimpan data sampai API dan tabel D1 terkait ditambahkan.</div></div>
+ <div class="panel"><div class="panelhead"><div><h3 id="featurePanelTitle"></h3><p>Struktur modul disiapkan untuk pengembangan berikutnya.</p></div><span class="tag">Menunggu API</span></div><div class="featuregrid" id="featureItems"></div></div>
+</section>
+<section class="page hidden" id="page-settings">
+ <div class="head"><div><div class="eyebrow">KONFIGURASI</div><h1>Pengaturan</h1><p class="sub">Informasi akun dan status koneksi sistem.</p></div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Informasi Administrator</h3><p>Identitas sesi yang sedang aktif.</p></div></div><div class="featuregrid">
+  <div class="feature"><span class="symbol">✉</span><div><b>Email</b><small id="settingsEmail">—</small></div></div>
+  <div class="feature"><span class="symbol">♙</span><div><b>Peran</b><small id="settingsRole">—</small></div></div>
+  <div class="feature"><span class="symbol">◉</span><div><b>Status sesi</b><small>Aktif, diverifikasi oleh /api/auth/me</small></div></div>
+  <div class="feature"><span class="symbol">▤</span><div><b>Database</b><small id="settingsDb">Memeriksa koneksi...</small></div></div>
+ </div></div>
+ <div class="panel"><div class="panelhead"><div><h3>Keamanan Akun</h3><p>Selalu keluar setelah selesai menggunakan perangkat bersama.</p></div></div><div class="notice">ⓘ <div>Cookie sesi menggunakan HttpOnly, Secure, SameSite=Strict dan masa berlaku 8 jam sesuai backend. API penggantian password belum tersedia.</div></div><button class="btn danger" id="logoutSettings">Keluar dari akun</button></div>
+</section>
+<div class="footer">© <span id="year"></span> SMP Negeri Satap 1 Watubangga · Panel Administrator</div>
+</div></main></div>
 
+<div class="modalbg" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><div class="modal">
+<h3 id="modalTitle">Tambah Akun Operator</h3><p>Buat akun operator baru untuk membantu mengelola website sekolah.</p>
+<form id="operatorForm"><div class="field"><label for="opEmail">Email Operator</label><input id="opEmail" type="email" required autocomplete="off" placeholder="nama@email.com"></div>
+<div class="field"><label for="opPassword">Password Baru</label><input id="opPassword" type="password" minlength="12" maxlength="128" required autocomplete="new-password" placeholder="Minimal 12 karakter"><small class="hint">Gunakan password kuat dan berbeda dari akun lain. Password tidak ditampilkan kembali.</small></div>
+<div class="actions"><button type="button" class="btn secondary" id="cancel">Batal</button><button type="submit" class="btn" id="save">Simpan Operator</button></div></form></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(()=>{"use strict";
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const state={user:null,operators:[],timer:null};
+const names={overview:"Dashboard",guru:"Data Guru",siswa:"Data Siswa",berita:"Berita Sekolah",pengumuman:"Pengumuman",galeri:"Galeri",operators:"Akun Operator",settings:"Pengaturan"};
+const modules={
+guru:["Data Guru","Kelola profil, identitas, dan informasi tenaga pendidik.",[["♙","Profil Guru","Nama, NIP, jabatan, mata pelajaran, foto"],["▤","Data Kepegawaian","Informasi kepegawaian dan status pendidik"],["⌕","Pencarian Guru","Pencarian dan penyaringan data pendidik"]]],
+siswa:["Data Siswa","Kelola data peserta didik berdasarkan kelas dan tahun ajaran.",[["♧","Biodata Siswa","Identitas dan informasi peserta didik"],["▦","Data Rombel","Pengelompokan siswa berdasarkan kelas"],["⌕","Pencarian Siswa","Pencarian data peserta didik"]]],
+berita:["Berita Sekolah","Kelola publikasi berita dan kegiatan sekolah.",[["▤","Artikel Berita","Judul, isi, tanggal, penulis"],["▧","Foto Sampul","Gambar utama publikasi"],["◷","Status Publikasi","Draf dan berita diterbitkan"]]],
+pengumuman:["Pengumuman","Kelola informasi resmi warga sekolah.",[["◉","Informasi Pengumuman","Judul, isi, tanggal pengumuman"],["◷","Masa Tayang","Tanggal publikasi"],["▣","Lampiran","Dokumen pendukung"]]],
+galeri:["Galeri","Kelola dokumentasi foto dan kegiatan sekolah.",[["▧","Album Foto","Pengelompokan dokumentasi kegiatan"],["＋","Unggah Foto","Penambahan dokumentasi gambar"],["✎","Keterangan Foto","Judul, tanggal, deskripsi foto"]]]
+};
+function toast(msg,error=false){const el=$("#toast");el.textContent=msg;el.className="toast show"+(error?" error":"");clearTimeout(state.timer);state.timer=setTimeout(()=>el.className="toast",3800)}
+async function api(path,opt={}){const r=await fetch(path,{...opt,credentials:"same-origin",cache:"no-store",headers:{...(opt.body?{"Content-Type":"application/json"}:{}),...(opt.headers||{})}});let d={};try{d=await r.json()}catch(_){}if(r.status===401){location.replace("/admin.html?reason=session");throw Error("Sesi berakhir. Silakan login kembali.")}if(!r.ok||d.success===false)throw Error(d.message||`Permintaan gagal (${r.status})`);return d}
+function roleName(r){return r==="kepala_sekolah"?"Kepala Sekolah":r==="operator"?"Operator":r||"—"}
+function navigate(page){if(!names[page])return;$$(".page").forEach(p=>p.classList.add("hidden"));const section=["overview","operators","settings"].includes(page)?$("#page-"+page):$("#page-feature");section.classList.remove("hidden");$$(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));$("#crumb").textContent=names[page];$("#sidebar").classList.remove("open");if(modules[page])renderModule(page);if(page==="operators")loadOperators()}
+function renderModule(page){const m=modules[page];$("#featureTitle").textContent=m[0];$("#featureSub").textContent=m[1];$("#featurePanelTitle").textContent="Ruang Pengelolaan "+m[0];const root=$("#featureItems");root.replaceChildren();m[2].forEach(x=>{const row=document.createElement("div");row.className="feature";const icon=document.createElement("span");icon.className="symbol";icon.textContent=x[0];const box=document.createElement("div"),b=document.createElement("b"),s=document.createElement("small");b.textContent=x[1];s.textContent=x[2];box.append(b,s);row.append(icon,box);root.append(row)})}
+function dateText(v){if(!v)return"Belum pernah";const d=new Date(v);return Number.isNaN(d.getTime())?String(v):d.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"})}
+function renderOperators(){const root=$("#operatorTable");$("#operatorSubtitle").textContent=state.operators.length+" akun operator terdaftar";if(!state.operators.length){root.innerHTML='<div class="empty"><span>♙</span>Belum ada akun operator. Gunakan tombol Tambah Operator untuk membuat akun pertama.</div>';return}
+const table=document.createElement("table");table.innerHTML="<thead><tr><th>Email</th><th>Peran</th><th>Dibuat</th><th>Login Terakhir</th><th>Aksi</th></tr></thead>";const body=document.createElement("tbody");
+state.operators.forEach(op=>{const tr=document.createElement("tr");const vals=[op.email||"—","Operator",dateText(op.created_at),dateText(op.last_login)];vals.forEach((v,i)=>{const td=document.createElement("td");if(i===1){const tag=document.createElement("span");tag.className="tag";tag.textContent=v;td.append(tag)}else td.textContent=v;tr.append(td)});const td=document.createElement("td"),btn=document.createElement("button");btn.className="btn danger";btn.textContent="Hapus";btn.addEventListener("click",()=>deleteOperator(op.id,op.email));td.append(btn);tr.append(td);body.append(tr)});table.append(body);root.replaceChildren(table)}
+async function loadOperators(){if(state.user?.role!=="kepala_sekolah"){$("#operatorTable").innerHTML='<div class="empty">Menu ini hanya tersedia untuk Kepala Sekolah.</div>';$("#addOperator").disabled=true;return}$("#operatorTable").innerHTML='<div class="empty">Memuat daftar operator...</div>';try{const d=await api("/api/admin/operators");state.operators=Array.isArray(d.operators)?d.operators:[];renderOperators()}catch(e){$("#operatorTable").innerHTML='<div class="empty">Gagal memuat operator. Periksa koneksi dan coba lagi.</div>';toast(e.message,true)}}
+function openModal(){$("#operatorForm").reset();$("#modal").classList.add("show");setTimeout(()=>$("#opEmail").focus(),40)}
+function closeModal(){$("#modal").classList.remove("show")}
+async function createOperator(e){e.preventDefault();const email=$("#opEmail").value.trim(),password=$("#opPassword").value;if(password.length<12)return toast("Password minimal 12 karakter.",true);const b=$("#save");b.disabled=true;b.textContent="Menyimpan...";try{const d=await api("/api/admin/operators",{method:"POST",body:JSON.stringify({email,password})});closeModal();toast(d.message||"Operator berhasil dibuat.");await loadOperators()}catch(err){toast(err.message,true)}finally{b.disabled=false;b.textContent="Simpan Operator"}}
+async function deleteOperator(id,email){if(!confirm(`Hapus akun operator ${email}? Tindakan ini tidak dapat dibatalkan.`))return;try{const d=await api("/api/admin/operators/"+encodeURIComponent(id),{method:"DELETE"});toast(d.message||"Operator dihapus.");await loadOperators()}catch(e){toast(e.message,true)}}
+async function logout(){try{await fetch("/api/auth/logout",{method:"POST",credentials:"same-origin",cache:"no-store"})}catch(_){}location.replace("/admin.html?reason=logout")}
+async function init(){
+$("#date").textContent=new Date().toLocaleDateString("id-ID",{weekday:"long",day:"numeric",month:"long",year:"numeric"});$("#year").textContent=new Date().getFullYear();
+try{const d=await api("/api/auth/me");if(!d.user)throw Error("Sesi tidak valid");state.user=d.user;const email=d.user.email||"Administrator";$("#sideEmail").textContent=email;$("#sideRole").textContent=roleName(d.user.role);$("#avatar").textContent=email[0].toUpperCase();$("#welcome").textContent="Selamat datang, "+email;$("#roleStat").textContent=roleName(d.user.role);$("#settingsEmail").textContent=email;$("#settingsRole").textContent=roleName(d.user.role);
+if(d.user.role==="kepala_sekolah"){try{const ops=await api("/api/admin/operators");state.operators=Array.isArray(ops.operators)?ops.operators:[];$("#operatorCount").textContent=state.operators.length;$("#operatorNote").textContent="Akun operator terdaftar"}catch(_){$("#operatorCount").textContent="—";$("#operatorNote").textContent="Tidak dapat memuat data"}}else{$("#operatorNav").classList.add("hidden");$("#operatorCount").textContent="Terbatas"}
+$("#backendDot").className="dot ok";$("#backendStatus").textContent="Sesi terverifikasi";
+}catch(e){location.replace("/admin.html?reason=session");return}
+try{await api("/api/health");$("#dbStat").textContent="Terhubung";$("#settingsDb").textContent="Terhubung melalui /api/health";$("#backendDot").className="dot ok";$("#backendStatus").textContent="Backend & database aktif"}catch(e){$("#dbStat").textContent="Periksa";$("#settingsDb").textContent="Pemeriksaan gagal: "+e.message;$("#backendDot").className="dot bad";$("#backendStatus").textContent="Backend perlu diperiksa"}
+}
+$$(".nav button").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.page)));$$("[data-goto]").forEach(b=>b.addEventListener("click",()=>navigate(b.dataset.goto)));
+$("#menuToggle").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));$("#logout").addEventListener("click",logout);$("#logoutSettings").addEventListener("click",logout);$("#addOperator").addEventListener("click",openModal);$("#cancel").addEventListener("click",closeModal);$("#modal").addEventListener("click",e=>{if(e.target===$("#modal"))closeModal()});$("#operatorForm").addEventListener("submit",createOperator);$("#refresh").addEventListener("click",loadOperators);document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});init();
+})();
+</script>
+</body></html>
