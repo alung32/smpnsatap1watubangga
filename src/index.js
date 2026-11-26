@@ -194,7 +194,6 @@ async function requireLogin(request, env) {
 
   return user;
 }
-}
 
 export default {
   async fetch(request, env) {
