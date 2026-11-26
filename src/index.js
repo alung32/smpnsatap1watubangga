@@ -167,9 +167,34 @@ function validCredentials(email, password) {
     password.length <= 128;
 }
 
+
 async function requireLogin(request, env) {
-  const user = await readSession(request, env.AUTH_SECRET);
+  const session = await readSession(
+    request,
+    env.AUTH_SECRET
+  );
+
+  if (!session || !session.id) {
+    return null;
+  }
+
+  const user = await env.DB.prepare(`
+    SELECT id, email, role
+    FROM admins
+    WHERE id = ?
+    LIMIT 1
+  `).bind(session.id).first();
+
+  if (!user) {
+    return null;
+  }
+
+  if (!["kepala_sekolah", "operator"].includes(user.role)) {
+    return null;
+  }
+
   return user;
+}
 }
 
 export default {
