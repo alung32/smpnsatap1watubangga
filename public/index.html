@@ -458,7 +458,77 @@ async function loadPublicNews() {
 
 document.addEventListener("DOMContentLoaded", loadPublicNews);
 </script>
-</body>
+ <script>
+(async function () {
+  const newsList = document.getElementById("newsList");
+  if (!newsList) return;
 
+  const escapeHTML = (value) => String(value ?? "").replace(
+    /[&<>"']/g,
+    char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#039;"
+    })[char]
+  );
+
+  try {
+    const response = await fetch("/api/public/news", {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error("Berita gagal dimuat");
+    }
+
+    const berita = Array.isArray(result.data) ? result.data : [];
+
+    if (berita.length === 0) {
+      newsList.innerHTML = `
+        <article class="card">
+          <div class="symbol">📰</div>
+          <h3>Belum Ada Berita</h3>
+          <p>Berita sekolah akan ditampilkan di sini.</p>
+        </article>`;
+      return;
+    }
+
+    newsList.innerHTML = berita.map(item => {
+      const tanggal = item.published_at || item.created_at;
+      const tanggalTampil = tanggal
+        ? new Date(tanggal.replace(" ", "T") + (tanggal.endsWith("Z") ? "" : "Z"))
+            .toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            })
+        : "";
+
+      return `
+        <article class="card">
+          <div class="symbol">📰</div>
+          <h3>${escapeHTML(item.title)}</h3>
+          <p>${escapeHTML(item.excerpt || "Berita kegiatan sekolah.")}</p>
+          <small>${escapeHTML(tanggalTampil)}</small>
+        </article>
+      `;
+    }).join("");
+
+  } catch (error) {
+    console.error("Gagal memuat berita:", error);
+
+    newsList.innerHTML = `
+      <article class="card">
+        <h3>Berita belum dapat dimuat</h3>
+        <p>Silakan coba kembali.</p>
+      </article>`;
+  }
+})();
+</script>
 </body>
 </html>
