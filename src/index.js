@@ -1,321 +1,540 @@
+const encoder = new TextEncoder();
+const ITERATIONS = 210000;
+const COOKIE = "__Host-school_session";
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Website resmi SMP Negeri Satap 1 Watubangga">
-<title>SMP Negeri Satap 1 Watubangga</title>
-<style>
-:root{
- --navy:#092f60;--blue:#1266b3;--light:#eaf3fc;
- --white:#fff;--text:#24364b;--muted:#718096;
+function json(data, status = 200, headers = {}) {
+  return Response.json(data, {
+    status,
+    headers: { "Cache-Control": "no-store", ...headers }
+  });
 }
-*{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{font-family:Arial,sans-serif;color:var(--text);line-height:1.7;background:#f7faff}
-a{text-decoration:none;color:inherit}
-header{background:white;position:sticky;top:0;z-index:10;
- box-shadow:0 3px 15px #092f6012}
-.top{max-width:1180px;margin:auto;padding:12px 22px;
- display:flex;align-items:center;justify-content:space-between;gap:20px}
-.brand{display:flex;align-items:center;gap:12px}
-.brand img{width:58px;height:58px;object-fit:contain}
-.brand h1{font-size:17px;color:var(--navy);line-height:1.35}
-.brand p{font-size:11px;color:var(--muted)}
-nav{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-nav a{font-size:13px;font-weight:bold;color:#334b68}
-nav a:hover{color:var(--blue)}
-.hero{background:linear-gradient(120deg,#082c59,#1269b8);
- color:white;padding:95px 22px;text-align:center}
-.hero .tag{font-size:12px;letter-spacing:2px;color:#c9e5ff}
-.hero h2{font-size:clamp(29px,5vw,48px);line-height:1.2;
- margin:17px auto;max-width:850px}
-.hero p{max-width:680px;margin:auto;color:#e0edfc}
-.btn{display:inline-block;background:#ffcf63;color:#17385c;
- padding:12px 23px;border-radius:7px;font-weight:bold;margin-top:25px}
-.btn:hover{background:white}
-section{padding:65px 22px;scroll-margin-top:90px}
-.container{max-width:1120px;margin:auto}
-.heading{text-align:center;margin-bottom:35px}
-.heading h2{font-size:29px;color:var(--navy)}
-.heading p{color:var(--muted);font-size:14px}
-.about{background:white}
-.aboutbox{background:#f1f6fc;border-radius:14px;padding:30px;
- border-left:5px solid var(--blue)}
-.aboutbox h3{color:var(--navy);margin-bottom:12px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:20px}
-.card{background:white;padding:24px;border-radius:13px;
- box-shadow:0 5px 22px #17385c0d;border:1px solid #e9eff7}
-.card .symbol{font-size:27px;margin-bottom:12px}
-.card h3{color:var(--navy);font-size:18px;margin-bottom:9px}
-.card p{font-size:14px;color:var(--muted)}
-.news{background:var(--light)}
-.notice{border-left:4px solid var(--blue)}
-.gallery{background:white}
-.photo{height:175px;border-radius:10px;background:linear-gradient(135deg,#d9e9fa,#eef5fd);
- display:grid;place-items:center;color:#416589;font-size:14px;text-align:center;padding:15px}
-.teacher{background:var(--light)}
-.teacherbox{text-align:center}
-.teacherbox .avatar{width:85px;height:85px;border-radius:50%;
- margin:0 auto 15px;background:#d9e9fa;display:grid;place-items:center;font-size:34px}
-.contact{background:var(--navy);color:white}
-.contact .heading h2,.contact .heading p{color:white}
-.contact .card{color:var(--text)}
-footer{background:#061f40;color:#d7e7fa;text-align:center;padding:25px;font-size:13px}
-footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
-
-.ppdb{background:#f1f6fc}
-.ppdb-intro{max-width:780px;margin:0 auto 28px;text-align:center;color:var(--muted)}
-.ppdb-panel{max-width:900px;margin:auto;background:#fff;border:1px solid #e3ebf5;
- border-radius:16px;padding:clamp(20px,4vw,36px);box-shadow:0 8px 28px #17385c0b}
-.ppdb-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:25px}
-.ppdb-info .card{padding:18px}
-.ppdb-form h3{color:var(--navy);margin:8px 0 16px}
-.ppdb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.ppdb-field{display:flex;flex-direction:column;gap:6px}
-.ppdb-field.full{grid-column:1/-1}
-.ppdb-field label{font-size:13px;font-weight:bold;color:#334b68}
-.ppdb-field input,.ppdb-field select,.ppdb-field textarea{
- width:100%;border:1px solid #d5dfeb;border-radius:8px;padding:12px;
- font:inherit;font-size:14px;background:#fff;color:var(--text)
+function base64url(bytes) {
+  let binary = "";
+  for (const b of new Uint8Array(bytes)) binary += String.fromCharCode(b);
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
-.ppdb-field textarea{min-height:92px;resize:vertical}
-.ppdb-field input:focus,.ppdb-field select:focus,.ppdb-field textarea:focus{
- outline:2px solid #b8d8fa;border-color:var(--blue)
+function fromBase64url(value) {
+  const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = base64 + "=".repeat((4 - base64.length % 4) % 4);
+  return Uint8Array.from(atob(padded), c => c.charCodeAt(0));
 }
-.ppdb-submit{border:0;cursor:pointer;font:inherit}
-.ppdb-submit:disabled{opacity:.65;cursor:wait}
-.ppdb-result{display:none;margin-top:18px;padding:16px;border-radius:10px;background:#eaf7ef;
- color:#17643a;border:1px solid #b9e3c8}
-.ppdb-result.error{background:#fff1f0;color:#a12622;border-color:#f0c4c1}
-.ppdb-result strong{display:block;font-size:18px;margin-top:4px}
-.ppdb-note{font-size:12px;color:var(--muted);margin-top:12px}
-.ppdb-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-@media(max-width:600px){.ppdb-grid{grid-template-columns:1fr}.ppdb-field.full{grid-column:auto}}
-
-@media(max-width:760px){
- .top{flex-direction:column}
- nav{justify-content:center;gap:12px}
- nav a{font-size:12px}
- .hero{padding:70px 20px}
- section{padding:48px 18px}
+async function hashPassword(password) {
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({
+    name: "PBKDF2", salt, iterations: ITERATIONS, hash: "SHA-256"
+  }, key, 256);
+  return `pbkdf2$${ITERATIONS}$${base64url(salt)}$${base64url(bits)}`;
 }
-</style>
-</head>
-<body>
+async function verifyPassword(password, stored) {
+  try {
+    const [algorithm, iterations, saltText, hashText] = stored.split("$");
+    if (algorithm !== "pbkdf2") return false;
+    const rounds = Number(iterations);
+    if (!Number.isInteger(rounds) || rounds < 100000 || rounds > 600000) return false;
+    const key = await crypto.subtle.importKey("raw", encoder.encode(password), "PBKDF2", false, ["deriveBits"]);
+    const bits = await crypto.subtle.deriveBits({
+      name: "PBKDF2", salt: fromBase64url(saltText), iterations: rounds, hash: "SHA-256"
+    }, key, 256);
+    const actual = new Uint8Array(bits), expected = fromBase64url(hashText);
+    if (actual.length !== expected.length) return false;
+    let diff = 0;
+    for (let i = 0; i < actual.length; i++) diff |= actual[i] ^ expected[i];
+    return diff === 0;
+  } catch { return false; }
+}
+async function secretMatches(a, b) {
+  if (!a || !b) return false;
+  const [x, y] = await Promise.all([
+    crypto.subtle.digest("SHA-256", encoder.encode(a)),
+    crypto.subtle.digest("SHA-256", encoder.encode(b))
+  ]);
+  const aa = new Uint8Array(x), bb = new Uint8Array(y);
+  let diff = 0;
+  for (let i = 0; i < aa.length; i++) diff |= aa[i] ^ bb[i];
+  return diff === 0;
+}
+async function signSession(payload, secret) {
+  const key = await crypto.subtle.importKey("raw", encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const data = base64url(encoder.encode(JSON.stringify(payload)));
+  const signature = await crypto.subtle.sign("HMAC", key, encoder.encode(data));
+  return `${data}.${base64url(signature)}`;
+}
+async function readSession(request, secret) {
+  try {
+    if (!secret) return null;
+    const cookie = request.headers.get("Cookie") || "";
+    const item = cookie.split(";").map(v => v.trim()).find(v => v.startsWith(COOKIE + "="));
+    if (!item) return null;
+    const token = item.slice(COOKIE.length + 1);
+    const [data, signature] = token.split(".");
+    if (!data || !signature) return null;
+    const key = await crypto.subtle.importKey("raw", encoder.encode(secret),
+      { name: "HMAC", hash: "SHA-256" }, false, ["verify"]);
+    const valid = await crypto.subtle.verify("HMAC", key, fromBase64url(signature), encoder.encode(data));
+    if (!valid) return null;
+    const payload = JSON.parse(new TextDecoder().decode(fromBase64url(data)));
+    if (!payload.exp || payload.exp < Date.now()) return null;
+    return payload;
+  } catch { return null; }
+}
+function sessionCookie(token) {
+  return `${COOKIE}=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=28800`;
+}
+function clearCookie() {
+  return `${COOKIE}=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0`;
+}
+async function body(request) {
+  try { return await request.json(); } catch { return null; }
+}
+function validCredentials(email, password) {
+  return typeof email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) &&
+    typeof password === "string" && password.length >= 12 && password.length <= 128;
+}
+async function requireLogin(request, env) {
+  const session = await readSession(request, env.AUTH_SECRET);
+  if (!session || !session.id) return null;
+  const user = await env.DB.prepare(`
+    SELECT id, email, role FROM admins WHERE id = ? LIMIT 1
+  `).bind(session.id).first();
+  if (!user || !["kepala_sekolah", "operator"].includes(user.role)) return null;
+  return user;
+}
+function isHead(user) { return user?.role === "kepala_sekolah"; }
+function cleanText(value, max = 20000) {
+  if (value === null || value === undefined) return null;
+  return String(value).trim().slice(0, max);
+}
+function makeSlug(value) {
+  const slug = String(value || "").toLowerCase().normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "").slice(0, 100);
+  return slug || `berita-${Date.now()}`;
+}
 
-<header>
- <div class="top">
-  <div class="brand">
-   <img src="satap.png" alt="Logo SMP Negeri Satap 1 Watubangga">
-   <div>
-    <h1>SMP NEGERI SATAP 1 WATUBANGGA</h1>
-    <p>Website Resmi Sekolah</p>
-   </div>
-  </div>
-  <nav>
-   <a href="#beranda">Beranda</a>
-   <a href="#profil">Profil</a>
-   <a href="#berita">Berita</a>
-   <a href="#pengumuman">Pengumuman</a>
-   <a href="#galeri">Galeri</a>
-   <a href="#guru">Guru</a>
-   <a href="#ppdb" aria-label="Buka halaman Penerimaan Peserta Didik Baru">PPDB</a>
-   <a href="#kontak">Kontak</a>
-  </nav>
- </div>
-</header>
-
-<main>
-<section class="hero" id="beranda">
- <div class="container">
-  <p class="tag">SELAMAT DATANG DI WEBSITE RESMI SEKOLAH</p>
-  <h2>SMP NEGERI SATAP 1 WATUBANGGA</h2>
-  <p>Membangun generasi berkarakter, berprestasi, berpengetahuan,
-  dan siap menghadapi masa depan.</p>
-  <a class="btn" href="#profil">Jelajahi Sekolah</a>
- </div>
-</section>
-
-<section class="about" id="profil">
- <div class="container">
-  <div class="heading">
-   <h2>Profil Sekolah</h2>
-   <p>Mengenal lebih dekat sekolah kami</p>
-  </div>
-  <div class="aboutbox">
-   <h3>SMP Negeri Satap 1 Watubangga</h3>
-   <p>Selamat datang di website resmi SMP Negeri Satap 1 Watubangga.
-   Website ini menjadi media informasi dan komunikasi bagi peserta didik,
-   orang tua, pendidik, tenaga kependidikan, alumni, dan masyarakat.</p>
-   <p>Informasi sejarah, visi, misi, dan identitas sekolah akan dilengkapi
-   berdasarkan data resmi sekolah.</p>
-  </div>
- </div>
-</section>
-
-<section id="berita">
- <div class="container">
-  <div class="heading">
-   <h2>Berita Sekolah</h2>
-   <p>Informasi kegiatan dan prestasi sekolah</p>
-  </div>
-  <div class="grid">
-   <article class="card">
-    <div class="symbol">📰</div>
-    <h3>Berita Kegiatan Sekolah</h3>
-    <p>Informasi kegiatan sekolah akan ditampilkan di sini.</p>
-   </article>
-   <article class="card">
-    <div class="symbol">🏆</div>
-    <h3>Prestasi Peserta Didik</h3>
-    <p>Publikasi prestasi dan pencapaian peserta didik.</p>
-   </article>
-   <article class="card">
-    <div class="symbol">📚</div>
-    <h3>Kegiatan Pembelajaran</h3>
-    <p>Dokumentasi kegiatan belajar dan program pendidikan.</p>
-   </article>
-  </div>
- </div>
-</section>
-
-<section class="news" id="pengumuman">
- <div class="container">
-  <div class="heading">
-   <h2>Pengumuman</h2>
-   <p>Informasi penting untuk warga sekolah</p>
-  </div>
-  <div class="card notice">
-   <h3>Informasi Sekolah</h3>
-   <p>Pengumuman resmi sekolah akan ditampilkan di bagian ini.</p>
-  </div>
- </div>
-</section>
-
-<section class="gallery" id="galeri">
- <div class="container">
-  <div class="heading">
-   <h2>Galeri Sekolah</h2>
-   <p>Dokumentasi aktivitas SMP Negeri Satap 1 Watubangga</p>
-  </div>
-  <div class="grid">
-   <div class="photo">Foto Gedung Sekolah</div>
-   <div class="photo">Foto Kegiatan Pembelajaran</div>
-   <div class="photo">Foto Kegiatan Sekolah</div>
-  </div>
- </div>
-</section>
-
-<section class="teacher" id="guru">
- <div class="container">
-  <div class="heading">
-   <h2>Guru dan Tenaga Kependidikan</h2>
-   <p>Para pendidik dan tenaga kependidikan sekolah</p>
-  </div>
-  <div class="grid">
-   <div class="card teacherbox">
-    <div class="avatar">👩‍🏫</div>
-    <h3>Data Guru</h3>
-    <p>Daftar nama dan foto guru akan dilengkapi menggunakan data resmi.</p>
-   </div>
-   <div class="card teacherbox">
-    <div class="avatar">👨‍🏫</div>
-    <h3>Tenaga Kependidikan</h3>
-    <p>Informasi tenaga kependidikan sekolah akan ditampilkan di sini.</p>
-   </div>
-  </div>
- </div>
-</section>
-
-
-<section class="ppdb" id="ppdb">
- <div class="container">
-  <div class="heading">
-   <h2>Penerimaan Peserta Didik Baru (PPDB)</h2>
-   <p>Informasi dan pendaftaran calon peserta didik SMP Negeri Satap 1 Watubangga</p>
-  </div>
-  <p class="ppdb-intro">Selamat datang di halaman PPDB. Silakan isi formulir dengan data yang benar dan aktifkan nomor telepon orang tua/wali agar pihak sekolah dapat menghubungi calon peserta didik.</p>
-  <div class="ppdb-info">
-   <div class="card"><div class="symbol">📋</div><h3>Lengkapi Data</h3><p>Isi identitas calon peserta didik dan informasi orang tua/wali secara lengkap.</p></div>
-   <div class="card"><div class="symbol">📨</div><h3>Kirim Pendaftaran</h3><p>Setelah formulir dikirim, simpan nomor pendaftaran yang ditampilkan.</p></div>
-   <div class="card"><div class="symbol">🏫</div><h3>Verifikasi Sekolah</h3><p>Panitia sekolah akan memeriksa data dan menghubungi orang tua/wali bila diperlukan.</p></div>
-  </div>
-  <div class="ppdb-panel">
-   <form id="ppdbForm" class="ppdb-form">
-    <h3>Formulir Pendaftaran Calon Peserta Didik</h3>
-    <div class="ppdb-grid">
-     <div class="ppdb-field"><label for="ppdbName">Nama Lengkap Calon Siswa *</label><input id="ppdbName" name="student_name" maxlength="180" required autocomplete="name"></div>
-     <div class="ppdb-field"><label for="ppdbGender">Jenis Kelamin *</label><select id="ppdbGender" name="gender" required><option value="">Pilih jenis kelamin</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
-     <div class="ppdb-field"><label for="ppdbBirthPlace">Tempat Lahir</label><input id="ppdbBirthPlace" name="birth_place" maxlength="100"></div>
-     <div class="ppdb-field"><label for="ppdbBirthDate">Tanggal Lahir</label><input id="ppdbBirthDate" name="birth_date" type="date"></div>
-     <div class="ppdb-field"><label for="ppdbSchool">Asal Sekolah *</label><input id="ppdbSchool" name="previous_school" maxlength="220" required placeholder="Nama SD/MI asal"></div>
-     <div class="ppdb-field"><label for="ppdbParent">Nama Orang Tua/Wali *</label><input id="ppdbParent" name="parent_name" maxlength="180" required></div>
-     <div class="ppdb-field"><label for="ppdbPhone">Nomor HP Orang Tua/Wali *</label><input id="ppdbPhone" name="phone" type="tel" maxlength="40" required autocomplete="tel" placeholder="Contoh: 08xxxxxxxxxx"></div>
-     <div class="ppdb-field full"><label for="ppdbAddress">Alamat Lengkap *</label><textarea id="ppdbAddress" name="address" maxlength="2000" required></textarea></div>
-    </div>
-    <div class="ppdb-trap" aria-hidden="true"><label for="ppdbWebsite">Jangan isi kolom ini</label><input id="ppdbWebsite" name="website" tabindex="-1" autocomplete="off"></div>
-    <button class="btn ppdb-submit" id="ppdbSubmit" type="submit">Kirim Pendaftaran</button>
-    <p class="ppdb-note">Tanda (*) wajib diisi. Data pendaftaran digunakan oleh pihak sekolah untuk proses penerimaan peserta didik baru.</p>
-    <div id="ppdbResult" class="ppdb-result" role="status" aria-live="polite"></div>
-   </form>
-  </div>
- </div>
-</section>
-<script>
-(function(){
- const form=document.getElementById('ppdbForm');
- if(!form)return;
- const submit=document.getElementById('ppdbSubmit');
- const result=document.getElementById('ppdbResult');
- form.addEventListener('submit',async function(event){
-  event.preventDefault();
-  result.style.display='none';result.className='ppdb-result';
-  submit.disabled=true;submit.textContent='Mengirim...';
-  const fd=new FormData(form);
-  const payload=Object.fromEntries(fd.entries());
-  try{
-   const response=await fetch('/api/public/ppdb',{
-    method:'POST',headers:{'Content-Type':'application/json'},
-    credentials:'same-origin',body:JSON.stringify(payload)
-   });
-   const data=await response.json().catch(()=>({}));
-   if(!response.ok||!data.success)throw new Error(data.message||'Pendaftaran belum dapat dikirim. Silakan coba kembali.');
-   result.className='ppdb-result';
-   result.innerHTML='Pendaftaran berhasil dikirim.<strong>Nomor Pendaftaran: '+String(data.registration_no).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><span>Simpan nomor ini untuk keperluan konfirmasi dengan pihak sekolah.</span>';
-   result.style.display='block';form.reset();
-  }catch(error){
-   result.className='ppdb-result error';result.textContent=error.message||'Terjadi kesalahan saat mengirim pendaftaran.';result.style.display='block';
-  }finally{
-   submit.disabled=false;submit.textContent='Kirim Pendaftaran';
+/*
+ * Kolom-kolom berikut mengikuti skema D1 yang sudah digunakan proyek:
+ * teachers, news, announcements, gallery, school_profile, admins.
+ * students adalah tabel tambahan pada migrasi 0002.
+ */
+const RESOURCES = {
+  teachers: {
+    table: "teachers", order: "sort_order ASC, id DESC",
+    fields: ["name", "position", "subject", "photo_key", "bio", "sort_order", "is_active"],
+    required: ["name"],
+    normalize(input) {
+      return {
+        name: cleanText(input.name, 180),
+        position: cleanText(input.position, 180),
+        subject: cleanText(input.subject, 180),
+        photo_key: cleanText(input.photo_key, 1000),
+        bio: cleanText(input.bio, 10000),
+        sort_order: Number.isFinite(Number(input.sort_order)) ? Number(input.sort_order) : 0,
+        is_active: input.is_active === false || Number(input.is_active) === 0 ? 0 : 1
+      };
+    }
+  },
+  students: {
+    table: "students", order: "class_name ASC, name COLLATE NOCASE ASC",
+    fields: ["name", "nis", "class_name", "gender", "birth_date", "guardian", "phone", "address", "status"],
+    required: ["name", "class_name"],
+    normalize(input) {
+      const status = ["aktif", "pindah", "lulus", "nonaktif"].includes(input.status) ? input.status : "aktif";
+      return {
+        name: cleanText(input.name, 180), nis: cleanText(input.nis, 40),
+        class_name: cleanText(input.class_name, 40), gender: cleanText(input.gender, 30),
+        birth_date: cleanText(input.birth_date, 20), guardian: cleanText(input.guardian, 180),
+        phone: cleanText(input.phone, 40), address: cleanText(input.address, 2000), status
+      };
+    }
+  },
+  news: {
+    table: "news", order: "created_at DESC, id DESC",
+    fields: ["title", "slug", "excerpt", "content", "image_key", "status"],
+    required: ["title"],
+    normalize(input) {
+      const status = input.status === "published" ? "published" : "draft";
+      return {
+        title: cleanText(input.title, 220),
+        slug: makeSlug(input.slug || input.title),
+        excerpt: cleanText(input.excerpt, 1000),
+        content: cleanText(input.content, 50000),
+        image_key: cleanText(input.image_key, 1000),
+        status
+      };
+    }
+  },
+  announcements: {
+    table: "announcements", order: "created_at DESC, id DESC",
+    fields: ["title", "content", "status"],
+    required: ["title"],
+    normalize(input) {
+      return {
+        title: cleanText(input.title, 220),
+        content: cleanText(input.content, 20000),
+        status: input.status === "published" ? "published" : "draft"
+      };
+    }
+  },
+  gallery: {
+    table: "gallery", order: "created_at DESC, id DESC",
+    fields: ["title", "description", "image_key", "category"],
+    required: ["title", "image_key"],
+    normalize(input) {
+      return {
+        title: cleanText(input.title, 220),
+        description: cleanText(input.description, 3000),
+        image_key: cleanText(input.image_key, 1000),
+        category: cleanText(input.category, 100)
+      };
+    }
+  },
+  ppdb: {
+    table: "ppdb_applications", order: "created_at DESC, id DESC",
+    fields: ["registration_no", "student_name", "gender", "birth_place", "birth_date", "previous_school", "parent_name", "phone", "address", "status", "notes"],
+    required: ["student_name", "parent_name", "phone"],
+    normalize(input) {
+      const status = ["baru", "diverifikasi", "diterima", "cadangan", "ditolak"].includes(input.status) ? input.status : "baru";
+      return {
+        registration_no: cleanText(input.registration_no, 40) || null,
+        student_name: cleanText(input.student_name, 180),
+        gender: cleanText(input.gender, 20),
+        birth_place: cleanText(input.birth_place, 100),
+        birth_date: cleanText(input.birth_date, 20),
+        previous_school: cleanText(input.previous_school, 220),
+        parent_name: cleanText(input.parent_name, 180),
+        phone: cleanText(input.phone, 40),
+        address: cleanText(input.address, 2000),
+        status,
+        notes: cleanText(input.notes, 3000)
+      };
+    }
   }
- });
-})();
-</script>
+};
 
-<section class="contact" id="kontak">
- <div class="container">
-  <div class="heading">
-   <h2>Hubungi Kami</h2>
-   <p>Informasi dan komunikasi dengan sekolah</p>
-  </div>
-  <div class="card">
-   <p><b>Nama Sekolah:</b> SMP Negeri Satap 1 Watubangga</p>
-   <p><b>Alamat:</b> Akan dilengkapi dengan alamat resmi sekolah.</p>
-   <p><b>Email:</b> Akan dilengkapi.</p>
-   <p><b>Telepon:</b> Akan dilengkapi.</p>
-  </div>
- </div>
-</section>
-</main>
+async function listResource(env, key) {
+  const cfg = RESOURCES[key];
+  const result = await env.DB.prepare(`SELECT * FROM ${cfg.table} ORDER BY ${cfg.order}`).all();
+  return result.results || [];
+}
+async function createResource(env, key, input) {
+  const cfg = RESOURCES[key], data = cfg.normalize(input || {});
+  for (const field of cfg.required) {
+    if (!data[field] || (typeof data[field] === "string" && !data[field].trim())) {
+      return { error: `Kolom ${field} wajib diisi` };
+    }
+  }
+  if (key === "news") {
+    const exists = await env.DB.prepare("SELECT id FROM news WHERE slug = ?").bind(data.slug).first();
+    if (exists) data.slug = `${data.slug}-${Date.now().toString(36)}`;
+  }
+  const cols = Object.keys(data);
+  const values = cols.map(k => data[k]);
+  const placeholders = cols.map(() => "?").join(", ");
+  let sql = `INSERT INTO ${cfg.table} (${cols.join(", ")}) VALUES (${placeholders})`;
+  if (key === "news" && data.status === "published") {
+    sql = `INSERT INTO news (${cols.join(", ")}, published_at) VALUES (${placeholders}, CURRENT_TIMESTAMP)`;
+  } else if (key === "announcements" && data.status === "published") {
+    sql = `INSERT INTO announcements (${cols.join(", ")}, published_at) VALUES (${placeholders}, CURRENT_TIMESTAMP)`;
+  }
+  const result = await env.DB.prepare(sql).bind(...values).run();
+  return { id: result.meta?.last_row_id ?? null };
+}
+async function updateResource(env, key, id, input) {
+  const cfg = RESOURCES[key], data = cfg.normalize(input || {});
+  const cols = Object.keys(data).filter(k => input && Object.prototype.hasOwnProperty.call(input, k));
+  if (!cols.length) return { error: "Tidak ada data yang diubah" };
+  const patch = Object.fromEntries(cols.map(k => [k, data[k]]));
+  for (const field of cfg.required) {
+    if (Object.prototype.hasOwnProperty.call(patch, field) && !patch[field]) return { error: `Kolom ${field} wajib diisi` };
+  }
+  if (key === "news" && patch.slug) {
+    const exists = await env.DB.prepare("SELECT id FROM news WHERE slug = ? AND id != ?").bind(patch.slug, id).first();
+    if (exists) patch.slug = `${patch.slug}-${Date.now().toString(36)}`;
+  }
+  const set = Object.keys(patch).map(k => `${k} = ?`);
+  const vals = Object.values(patch);
+  if (key === "news" || key === "announcements") {
+    if (patch.status === "published") set.push("published_at = COALESCE(published_at, CURRENT_TIMESTAMP)");
+    if (patch.status === "draft") set.push("published_at = NULL");
+  }
+  if (key === "news" || key === "students" || key === "ppdb") set.push("updated_at = CURRENT_TIMESTAMP");
+  const result = await env.DB.prepare(`UPDATE ${cfg.table} SET ${set.join(", ")} WHERE id = ?`)
+    .bind(...vals, id).run();
+  return { changes: result.meta?.changes ?? 0 };
+}
+async function deleteResource(env, key, id) {
+  const cfg = RESOURCES[key];
+  const result = await env.DB.prepare(`DELETE FROM ${cfg.table} WHERE id = ?`).bind(id).run();
+  return result.meta?.changes ?? 0;
+}
+async function adminApi(request, env, user, path, method) {
+  // Ringkasan statistik untuk dashboard
+  if (path === "/api/admin/dashboard" && method === "GET") {
+    const queries = await Promise.all([
+      env.DB.prepare("SELECT COUNT(*) AS n FROM teachers").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM students").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM news").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM announcements").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM gallery").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM admins WHERE role = 'operator'").first(),
+      env.DB.prepare("SELECT COUNT(*) AS n FROM ppdb_applications").first()
+    ]);
+    return json({ success: true, counts: {
+      teachers: queries[0]?.n || 0, students: queries[1]?.n || 0,
+      news: queries[2]?.n || 0, announcements: queries[3]?.n || 0,
+      gallery: queries[4]?.n || 0, operators: queries[5]?.n || 0,
+      ppdb: queries[6]?.n || 0
+    }});
+  }
 
-<footer>
- <img src="satap.png" alt="Logo sekolah">
- <p><b>SMP NEGERI SATAP 1 WATUBANGGA</b></p>
- <p>Website Resmi Sekolah</p>
- <p>© 2026 SMP Negeri Satap 1 Watubangga. Hak cipta dilindungi.</p>
-</footer>
+  // Profil sekolah: dibatasi untuk Kepala Sekolah
+  if (path === "/api/admin/school-profile") {
+    if (!isHead(user)) return json({ success: false, message: "Hanya Kepala Sekolah yang dapat mengubah profil sekolah" }, 403);
+    if (method === "GET") {
+      const profile = await env.DB.prepare("SELECT * FROM school_profile WHERE id = 1").first();
+      return json({ success: true, profile });
+    }
+    if (method === "PUT" || method === "PATCH") {
+      const input = await body(request) || {};
+      const allowed = ["school_name", "address", "history", "vision", "mission", "principal_name", "principal_message", "email", "phone"];
+      const patch = {};
+      for (const k of allowed) if (Object.prototype.hasOwnProperty.call(input, k)) patch[k] = cleanText(input[k], k === "history" || k === "mission" ? 10000 : 3000);
+      if (!Object.keys(patch).length) return json({ success: false, message: "Tidak ada data yang diubah" }, 400);
+      await env.DB.prepare("INSERT OR IGNORE INTO school_profile (id, school_name) VALUES (1, 'SMP Negeri Satap 1 Watubangga')").run();
+      const set = Object.keys(patch).map(k => `${k} = ?`).join(", ");
+      await env.DB.prepare(`UPDATE school_profile SET ${set}, updated_at = CURRENT_TIMESTAMP WHERE id = 1`)
+        .bind(...Object.values(patch)).run();
+      const profile = await env.DB.prepare("SELECT * FROM school_profile WHERE id = 1").first();
+      return json({ success: true, message: "Profil sekolah diperbarui", profile });
+    }
+    return json({ success: false, message: "Metode tidak didukung" }, 405);
+  }
 
-</body>
-</html>
+  // Akun operator hanya dapat dikelola Kepala Sekolah.
+  if (path === "/api/admin/operators" && method === "GET") {
+    if (!isHead(user)) return json({ success: false, message: "Akses ditolak" }, 403);
+    const result = await env.DB.prepare(`
+      SELECT id, email, role, created_at, last_login FROM admins
+      WHERE role = 'operator' ORDER BY id DESC
+    `).all();
+    return json({ success: true, operators: result.results || [] });
+  }
+  if (path === "/api/admin/operators" && method === "POST") {
+    if (!isHead(user)) return json({ success: false, message: "Akses ditolak" }, 403);
+    const input = await body(request);
+    const email = String(input?.email || "").trim().toLowerCase(), password = input?.password;
+    if (!validCredentials(email, password)) return json({ success: false, message: "Email tidak valid atau password minimal 12 karakter" }, 400);
+    const passwordHash = await hashPassword(password);
+    try {
+      await env.DB.prepare("INSERT INTO admins (email, password_hash, role) VALUES (?, ?, 'operator')")
+        .bind(email, passwordHash).run();
+      return json({ success: true, message: "Akun operator berhasil dibuat" }, 201);
+    } catch (error) {
+      if (String(error).toLowerCase().includes("unique")) return json({ success: false, message: "Email sudah digunakan" }, 409);
+      throw error;
+    }
+  }
+  const operatorMatch = path.match(/^\/api\/admin\/operators\/(\d+)$/);
+  if (operatorMatch && (method === "DELETE" || method === "PUT")) {
+    if (!isHead(user)) return json({ success: false, message: "Akses ditolak" }, 403);
+    const id = Number(operatorMatch[1]);
+    if (method === "DELETE") {
+      const result = await env.DB.prepare("DELETE FROM admins WHERE id = ? AND role = 'operator'")
+        .bind(id).run();
+      if (result.meta.changes !== 1) return json({ success: false, message: "Operator tidak ditemukan" }, 404);
+      return json({ success: true, message: "Akun operator berhasil dihapus" });
+    }
+    const input = await body(request) || {};
+    const updates = [];
+    const values = [];
+    if (input.email !== undefined) {
+      const email = String(input.email).trim().toLowerCase();
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ success: false, message: "Email tidak valid" }, 400);
+      updates.push("email = ?"); values.push(email);
+    }
+    if (input.password !== undefined) {
+      if (typeof input.password !== "string" || input.password.length < 12 || input.password.length > 128)
+        return json({ success: false, message: "Password minimal 12 karakter" }, 400);
+      updates.push("password_hash = ?"); values.push(await hashPassword(input.password));
+    }
+    if (!updates.length) return json({ success: false, message: "Tidak ada perubahan" }, 400);
+    try {
+      const result = await env.DB.prepare(`UPDATE admins SET ${updates.join(", ")} WHERE id = ? AND role = 'operator'`)
+        .bind(...values, id).run();
+      if (result.meta.changes !== 1) return json({ success: false, message: "Operator tidak ditemukan" }, 404);
+      return json({ success: true, message: "Akun operator berhasil diperbarui" });
+    } catch (error) {
+      if (String(error).toLowerCase().includes("unique")) return json({ success: false, message: "Email sudah digunakan" }, 409);
+      throw error;
+    }
+  }
+
+  // CRUD konten sekolah: Kepala Sekolah dan Operator.
+  const match = path.match(/^\/api\/admin\/(teachers|students|news|announcements|gallery|ppdb)(?:\/(\d+))?$/);
+  if (match) {
+    const key = match[1], id = match[2] ? Number(match[2]) : null;
+    if (method === "GET" && !id) {
+      const items = await listResource(env, key);
+      return json({ success: true, items });
+    }
+    if (method === "POST" && !id) {
+      const input = await body(request);
+      if (!input || typeof input !== "object") return json({ success: false, message: "Data tidak valid" }, 400);
+      const result = await createResource(env, key, input);
+      if (result.error) return json({ success: false, message: result.error }, 400);
+      return json({ success: true, message: "Data berhasil ditambahkan", id: result.id }, 201);
+    }
+    if ((method === "PUT" || method === "PATCH") && id) {
+      const input = await body(request);
+      if (!input || typeof input !== "object") return json({ success: false, message: "Data tidak valid" }, 400);
+      const result = await updateResource(env, key, id, input);
+      if (result.error) return json({ success: false, message: result.error }, 400);
+      if (!result.changes) return json({ success: false, message: "Data tidak ditemukan atau tidak berubah" }, 404);
+      return json({ success: true, message: "Data berhasil diperbarui" });
+    }
+    if (method === "DELETE" && id) {
+      const changes = await deleteResource(env, key, id);
+      if (!changes) return json({ success: false, message: "Data tidak ditemukan" }, 404);
+      return json({ success: true, message: "Data berhasil dihapus" });
+    }
+    return json({ success: false, message: "Metode atau alamat API tidak didukung" }, 405);
+  }
+
+  return json({ success: false, message: "API administrator tidak ditemukan" }, 404);
+}
+
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url), path = url.pathname, method = request.method;
+    try {
+      // HEALTH CHECK
+      if (path === "/api/health" && method === "GET") {
+        await env.DB.prepare("SELECT 1").first();
+        return json({ success: true, message: "Backend website sekolah aktif", database: "connected" });
+      }
+
+      // ONE-TIME KEPALA SEKOLAH REGISTRATION
+      if (path === "/api/auth/bootstrap" && method === "POST") {
+        const input = await body(request);
+        if (!env.BOOTSTRAP_SECRET) return json({ success: false, message: "Bootstrap tidak dikonfigurasi" }, 503);
+        if (!input || !await secretMatches(input.bootstrapSecret, env.BOOTSTRAP_SECRET))
+          return json({ success: false, message: "Kode pendaftaran tidak valid" }, 403);
+        const email = String(input.email || "").trim().toLowerCase(), password = input.password;
+        if (!validCredentials(email, password)) return json({
+          success: false, message: "Email atau password tidak memenuhi ketentuan. Password minimal 12 karakter."
+        }, 400);
+        const passwordHash = await hashPassword(password);
+        const result = await env.DB.prepare(`
+          INSERT INTO admins (email, password_hash, role)
+          SELECT ?, ?, 'kepala_sekolah' WHERE NOT EXISTS (SELECT 1 FROM admins)
+        `).bind(email, passwordHash).run();
+        if (result.meta.changes !== 1) return json({
+          success: false, message: "Pendaftaran awal sudah ditutup karena akun administrator telah tersedia."
+        }, 409);
+        return json({ success: true, message: "Akun Kepala Sekolah berhasil dibuat. Silakan login." }, 201);
+      }
+
+      // LOGIN — algoritma hash, cookie, dan durasi sesi dipertahankan.
+      if (path === "/api/auth/login" && method === "POST") {
+        if (!env.AUTH_SECRET) return json({ success: false, message: "AUTH_SECRET belum dikonfigurasi" }, 503);
+        const input = await body(request);
+        const email = String(input?.email || "").trim().toLowerCase(), password = input?.password;
+        if (!email || typeof password !== "string") return json({ success: false, message: "Email dan password wajib diisi" }, 400);
+        const admin = await env.DB.prepare(
+          "SELECT id, email, password_hash, role FROM admins WHERE email = ? LIMIT 1"
+        ).bind(email).first();
+        if (!admin || !await verifyPassword(password, admin.password_hash))
+          return json({ success: false, message: "Email atau password salah" }, 401);
+        if (!["kepala_sekolah", "operator"].includes(admin.role))
+          return json({ success: false, message: "Hak akses tidak valid" }, 403);
+        await env.DB.prepare("UPDATE admins SET last_login = CURRENT_TIMESTAMP WHERE id = ?").bind(admin.id).run();
+        const token = await signSession({
+          id: admin.id, email: admin.email, role: admin.role,
+          exp: Date.now() + 8 * 60 * 60 * 1000
+        }, env.AUTH_SECRET);
+        return json({ success: true, message: "Login berhasil", user: {
+          id: admin.id, email: admin.email, role: admin.role
+        }}, 200, { "Set-Cookie": sessionCookie(token) });
+      }
+
+      if (path === "/api/auth/me" && method === "GET") {
+        const user = await requireLogin(request, env);
+        if (!user) return json({ success: false, message: "Belum login" }, 401);
+        return json({ success: true, user });
+      }
+      if (path === "/api/auth/logout" && method === "POST") {
+        return json({ success: true, message: "Logout berhasil" }, 200, { "Set-Cookie": clearCookie() });
+      }
+
+      // PUBLIC PPDB SUBMISSION — stores applicant data without exposing the admin API.
+      if (path === "/api/public/ppdb" && method === "POST") {
+        const input = await body(request);
+        if (!input || typeof input !== "object" || Array.isArray(input)) {
+          return json({ success: false, message: "Data pendaftaran tidak valid" }, 400);
+        }
+        // Honeypot field for basic bot filtering.
+        if (String(input.website || "").trim()) {
+          return json({ success: true, message: "Pendaftaran berhasil diterima" }, 201);
+        }
+        const studentName = cleanText(input.student_name, 180);
+        const gender = cleanText(input.gender, 20);
+        const birthPlace = cleanText(input.birth_place, 100);
+        const birthDate = cleanText(input.birth_date, 20);
+        const previousSchool = cleanText(input.previous_school, 220);
+        const parentName = cleanText(input.parent_name, 180);
+        const phone = cleanText(input.phone, 40);
+        const address = cleanText(input.address, 2000);
+        if (!studentName || !gender || !previousSchool || !parentName || !phone || !address) {
+          return json({ success: false, message: "Lengkapi semua kolom wajib pada formulir." }, 400);
+        }
+        if (!["Laki-laki", "Perempuan"].includes(gender)) {
+          return json({ success: false, message: "Pilihan jenis kelamin tidak valid." }, 400);
+        }
+        if (!/^[0-9+() .-]{8,40}$/.test(phone)) {
+          return json({ success: false, message: "Nomor HP tidak valid. Periksa kembali nomor yang dimasukkan." }, 400);
+        }
+        if (birthDate && !/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+          return json({ success: false, message: "Format tanggal lahir tidak valid." }, 400);
+        }
+        // Nomor unik: kode sekolah + tanggal + token acak; no applicant data is exposed.
+        const random = crypto.getRandomValues(new Uint8Array(4));
+        const suffix = Array.from(random, b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
+        const datePart = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+        const registrationNo = `PPDB-${datePart}-${suffix}`;
+        try {
+          await env.DB.prepare(`
+            INSERT INTO ppdb_applications
+              (registration_no, student_name, gender, birth_place, birth_date,
+               previous_school, parent_name, phone, address, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'baru')
+          `).bind(
+            registrationNo, studentName, gender, birthPlace, birthDate,
+            previousSchool, parentName, phone, address
+          ).run();
+        } catch (error) {
+          // A rare registration number collision can be retried by the applicant.
+          console.error("Public PPDB insert failed:", error);
+          return json({ success: false, message: "Pendaftaran belum tersimpan. Silakan kirim kembali beberapa saat lagi." }, 500);
+        }
+        return json({
+          success: true,
+          message: "Pendaftaran berhasil dikirim.",
+          registration_no: registrationNo
+        }, 201);
+      }
+
+      if (path.startsWith("/api/admin/")) {
+        const user = await requireLogin(request, env);
+        if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
+        return await adminApi(request, env, user, path, method);
+      }
+      if (path.startsWith("/api/")) return json({ success: false, message: "API tidak ditemukan" }, 404);
+      return env.ASSETS.fetch(request);
+    } catch (error) {
+      console.error("Backend error:", error);
+      return json({ success: false, message: "Terjadi kesalahan pada server" }, 500);
+    }
+  }
+};
