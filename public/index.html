@@ -319,6 +319,63 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
   }
  });
 })();
+ // CEK HASIL SELEKSI PPDB
+(function () {
+  const form = document.getElementById('ppdbCheckForm');
+  const input = document.getElementById('ppdbCheckNumber');
+  const result = document.getElementById('ppdbCheckResult');
+
+  if (!form || !input || !result) return;
+
+  form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const registrationNo = input.value.trim().toUpperCase();
+
+    if (!registrationNo) {
+      result.textContent = 'Masukkan nomor pendaftaran terlebih dahulu.';
+      result.className = 'ppdb-result error';
+      result.style.display = 'block';
+      return;
+    }
+
+    const button = form.querySelector('button[type="submit"]');
+    button.disabled = true;
+    button.textContent = 'Memeriksa...';
+    result.style.display = 'none';
+
+    try {
+      const response = await fetch(
+        '/api/public/ppdb/status?registration_no=' +
+        encodeURIComponent(registrationNo)
+      );
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || 'Nomor pendaftaran tidak ditemukan.');
+      }
+
+      result.className = 'ppdb-result';
+      result.textContent =
+        'Nomor Pendaftaran: ' + data.registration_no +
+        ' | Nama: ' + data.student_name +
+        ' | Status: ' + data.status;
+
+      result.style.display = 'block';
+
+    } catch (error) {
+      result.className = 'ppdb-result error';
+      result.textContent = error.message ||
+        'Terjadi kesalahan saat memeriksa hasil seleksi.';
+      result.style.display = 'block';
+
+    } finally {
+      button.disabled = false;
+      button.textContent = 'Cek Hasil Seleksi';
+    }
+  });
+})();
 </script>
 
 <section class="contact" id="kontak">
