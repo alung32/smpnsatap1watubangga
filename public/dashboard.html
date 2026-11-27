@@ -34,6 +34,7 @@ table{width:100%;border-collapse:collapse;min-width:550px}th{text-align:left;bac
  <nav class="nav">
   <button class="active" data-page="overview"><span class="ico">▦</span>Dashboard</button>
   <button data-page="guru"><span class="ico">♙</span>Data Guru</button>
+  <button data-page="ppdb"><span class="ico">▣</span>PPDB</button>
   <button data-page="siswa"><span class="ico">♧</span>Data Siswa</button>
   <button data-page="berita"><span class="ico">▤</span>Berita Sekolah</button>
   <button data-page="pengumuman"><span class="ico">◉</span>Pengumuman</button>
@@ -98,13 +99,14 @@ table{width:100%;border-collapse:collapse;min-width:550px}th{text-align:left;bac
 (()=>{"use strict";
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const state={user:null,operators:[],timer:null};
-const names={overview:"Dashboard",guru:"Data Guru",siswa:"Data Siswa",berita:"Berita Sekolah",pengumuman:"Pengumuman",galeri:"Galeri",operators:"Akun Operator",settings:"Pengaturan"};
+const names={overview:"Dashboard",guru:"Data Guru",ppdb:"PPDB",siswa:"Data Siswa",berita:"Berita Sekolah",pengumuman:"Pengumuman",galeri:"Galeri",operators:"Akun Operator",settings:"Pengaturan"};
 const modules={
 guru:["Data Guru","Kelola profil, identitas, dan informasi tenaga pendidik.",[["♙","Profil Guru","Nama, NIP, jabatan, mata pelajaran, foto"],["▤","Data Kepegawaian","Informasi kepegawaian dan status pendidik"],["⌕","Pencarian Guru","Pencarian dan penyaringan data pendidik"]]],
 siswa:["Data Siswa","Kelola data peserta didik berdasarkan kelas dan tahun ajaran.",[["♧","Biodata Siswa","Identitas dan informasi peserta didik"],["▦","Data Rombel","Pengelompokan siswa berdasarkan kelas"],["⌕","Pencarian Siswa","Pencarian data peserta didik"]]],
 berita:["Berita Sekolah","Kelola publikasi berita dan kegiatan sekolah.",[["▤","Artikel Berita","Judul, isi, tanggal, penulis"],["▧","Foto Sampul","Gambar utama publikasi"],["◷","Status Publikasi","Draf dan berita diterbitkan"]]],
 pengumuman:["Pengumuman","Kelola informasi resmi warga sekolah.",[["◉","Informasi Pengumuman","Judul, isi, tanggal pengumuman"],["◷","Masa Tayang","Tanggal publikasi"],["▣","Lampiran","Dokumen pendukung"]]],
-galeri:["Galeri","Kelola dokumentasi foto dan kegiatan sekolah.",[["▧","Album Foto","Pengelompokan dokumentasi kegiatan"],["＋","Unggah Foto","Penambahan dokumentasi gambar"],["✎","Keterangan Foto","Judul, tanggal, deskripsi foto"]]]
+galeri:["Galeri","Kelola dokumentasi foto dan kegiatan sekolah.",[["▧","Album Foto","Pengelompokan dokumentasi kegiatan"],["＋","Unggah Foto","Penambahan dokumentasi gambar"],["✎","Keterangan Foto","Judul, tanggal, deskripsi foto"]]],
+ppdb:["PPDB","Kelola informasi Penerimaan Peserta Didik Baru.",[["▣","Informasi PPDB","Tahun ajaran, jadwal, dan jalur pendaftaran"],["☷","Persyaratan Pendaftaran","Informasi dokumen dan ketentuan calon peserta didik"],["♙","Data Pendaftar","Daftar calon peserta didik baru"],["◷","Status Pendaftaran","Pemantauan proses pendaftaran dan hasil seleksi"]]]
 };
 function toast(msg,error=false){const el=$("#toast");el.textContent=msg;el.className="toast show"+(error?" error":"");clearTimeout(state.timer);state.timer=setTimeout(()=>el.className="toast",3800)}
 async function api(path,opt={}){const r=await fetch(path,{...opt,credentials:"same-origin",cache:"no-store",headers:{...(opt.body?{"Content-Type":"application/json"}:{}),...(opt.headers||{})}});let d={};try{d=await r.json()}catch(_){}if(r.status===401){location.replace("/admin.html?reason=session");throw Error("Sesi berakhir. Silakan login kembali.")}if(!r.ok||d.success===false)throw Error(d.message||`Permintaan gagal (${r.status})`);return d}
