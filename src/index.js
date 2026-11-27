@@ -488,6 +488,27 @@ if (
     student_name: applicant.student_name,
     status: statusLabels[applicant.status] || applicant.status
   });
+}// BERITA PUBLIK
+if (path === "/api/public/news" && method === "GET") {
+  const result = await env.DB.prepare(`
+    SELECT
+      id,
+      title,
+      slug,
+      excerpt,
+      image_key,
+      published_at,
+      created_at
+    FROM news
+    WHERE status = 'published'
+    ORDER BY COALESCE(published_at, created_at) DESC, id DESC
+    LIMIT 12
+  `).all();
+
+  return json({
+    success: true,
+    data: result.results || []
+  });
 }
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
