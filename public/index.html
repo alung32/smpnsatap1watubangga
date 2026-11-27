@@ -160,13 +160,33 @@ section{padding:65px 22px;scroll-margin-top:90px}
   grid-column: 1 / -1;
 }
 
-.teacherbox .avatar{width:85px;height:85px;border-radius:50%;
- margin:0 auto 15px;background:#d9e9fa;display:grid;place-items:center;font-size:34px}
-.contact{background:var(--navy);color:white}
-.contact .heading h2,.contact .heading p{color:white}
-.contact .card{color:var(--text)}
-footer{background:#061f40;color:#d7e7fa;text-align:center;padding:25px;font-size:13px}
-footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
+
+/* Merapikan kartu guru */
+.teacherbox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.teacherbox h3 {
+  min-height: 52px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 17px;
+  line-height: 1.4;
+  margin: 12px 0 6px;
+  overflow-wrap: break-word;
+}
+
+.teacherbox p {
+  margin: 5px 0;
+  line-height: 1.5;
+}
+
 
 .ppdb{background:#f1f6fc}
 .ppdb-intro{max-width:780px;margin:0 auto 28px;text-align:center;color:var(--muted)}
