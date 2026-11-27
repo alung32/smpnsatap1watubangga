@@ -530,6 +530,26 @@ if (path === "/api/public/announcements" && method === "GET") {
     data: result.results || []
   });
 }
+      // GALERI PUBLIK - menampilkan dokumentasi foto sekolah
+if (path === "/api/public/gallery" && method === "GET") {
+  const result = await env.DB.prepare(`
+    SELECT
+      id,
+      title,
+      description,
+      image_key,
+      category,
+      created_at
+    FROM gallery
+    ORDER BY created_at DESC, id DESC
+    LIMIT 30
+  `).all();
+
+  return json({
+    success: true,
+    data: result.results || []
+  });
+}
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
