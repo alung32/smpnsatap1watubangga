@@ -444,7 +444,51 @@ export default {
       if (path === "/api/auth/logout" && method === "POST") {
         return json({ success: true, message: "Logout berhasil" }, 200, { "Set-Cookie": clearCookie() });
       }
+// CEK STATUS HASIL SELEKSI PPDB
+if (
+  path === "/api/public/ppdb/status" &&
+  method === "GET"
+) {
+  const registrationNo = String(
+    url.searchParams.get("registration_no") || ""
+  ).trim().toUpperCase();
 
+  if (!/^PPDB-\d{8}-[A-F0-9]{8}$/.test(registrationNo)) {
+    return json({
+      success: false,
+      message: "Format nomor pendaftaran tidak valid."
+    }, 400);
+  }
+
+  const applicant = await env.DB.prepare(`
+    SELECT registration_no, student_name, status
+    FROM ppdb_applications
+    WHERE registration_no = ?
+    LIMIT 1
+  `).bind(registrationNo).first();
+
+  if (!applicant) {
+    return json({
+      success: false,
+      message: "Nomor pendaftaran tidak ditemukan."
+    }, 404);
+  }
+
+  const statusLabels = {
+    baru: "Baru",
+    diverifikasi: "Diverifikasi",
+    diterima: "Diterima",
+    cadangan: "Cadangan",
+    ditolak: "Ditolak"
+  };
+
+  return json({
+    success: true,
+    registration_no: applicant.registration_no,
+    student_name: applicant.student_name,
+    status: statusLabels[applicant.status] || applicant.status
+  });
+}
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
