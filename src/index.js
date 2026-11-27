@@ -594,6 +594,35 @@ if (path === "/api/public/teachers" && method === "GET") {
     });
   }
 
+      // PUBLIC SCHOOL PROFILE
+      if (path === "/api/public/school-profile" && method === "GET") {
+        await env.DB.prepare(`
+          INSERT OR IGNORE INTO school_profile
+          (id, school_name)
+          VALUES (1, 'SMP Negeri Satap 1 Watubangga')
+        `).run();
+
+        const profile = await env.DB.prepare(`
+          SELECT
+            school_name,
+            address,
+            history,
+            vision,
+            mission,
+            principal_name,
+            principal_message,
+            email,
+            phone
+          FROM school_profile
+          WHERE id = 1
+        `).first();
+
+        return json({
+          success: true,
+          profile: profile || {}
+        });
+      }
+
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
