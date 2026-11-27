@@ -550,6 +550,28 @@ if (path === "/api/public/gallery" && method === "GET") {
     data: result.results || []
   });
 }
+      
+// DATA GURU PUBLIK
+if (path === "/api/public/teachers" && method === "GET") {
+  const result = await env.DB.prepare(`
+    SELECT
+      id,
+      name,
+      position,
+      subject,
+      photo_key,
+      bio
+    FROM teachers
+    WHERE is_active = 1
+    ORDER BY sort_order ASC, id DESC
+  `).all();
+
+  return json({
+    success: true,
+    data: result.results || []
+  });
+}
+
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
