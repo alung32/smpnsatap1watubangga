@@ -53,6 +53,42 @@ section{padding:65px 22px;scroll-margin-top:90px}
 .news{background:var(--light)}
 .notice{border-left:4px solid var(--blue)}
 .gallery{background:white}
+ .gallery-card{
+  background:white;
+  border:1px solid #e9eff7;
+  border-radius:13px;
+  overflow:hidden;
+  box-shadow:0 5px 22px #17385c0d;
+}
+
+.gallery-card img{
+  width:100%;
+  height:220px;
+  object-fit:cover;
+  display:block;
+}
+
+.gallery-info{
+  padding:18px;
+}
+
+.gallery-info h3{
+  color:var(--navy);
+  font-size:17px;
+  margin-bottom:6px;
+}
+
+.gallery-info p{
+  color:var(--muted);
+  font-size:14px;
+}
+
+.gallery-empty{
+  text-align:center;
+  padding:25px;
+  color:var(--muted);
+  grid-column:1/-1;
+}
 .photo{height:175px;border-radius:10px;background:linear-gradient(135deg,#d9e9fa,#eef5fd);
  display:grid;place-items:center;color:#416589;font-size:14px;text-align:center;padding:15px}
 .teacher{background:var(--light)}
@@ -193,11 +229,9 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
    <h2>Galeri Sekolah</h2>
    <p>Dokumentasi aktivitas SMP Negeri Satap 1 Watubangga</p>
   </div>
-  <div class="grid">
-   <div class="photo">Foto Gedung Sekolah</div>
-   <div class="photo">Foto Kegiatan Pembelajaran</div>
-   <div class="photo">Foto Kegiatan Sekolah</div>
-  </div>
+  <div class="grid" id="galleryList">
+  <div class="gallery-empty">Memuat foto galeri...</div>
+</div>
  </div>
 </section>
 
@@ -606,6 +640,84 @@ async function loadAnnouncements() {
 }
 
 document.addEventListener("DOMContentLoaded", loadAnnouncements);
+</script>
+ <script>
+async function loadPublicGallery() {
+  const gallery = document.getElementById("galleryList");
+
+  if (!gallery) return;
+
+  try {
+    const response = await fetch("/api/public/gallery", {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error("Gagal mengambil data galeri");
+    }
+
+    gallery.replaceChildren();
+
+    const items = Array.isArray(result.data) ? result.data : [];
+
+    if (items.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "gallery-empty";
+      empty.textContent = "Belum ada foto galeri sekolah.";
+      gallery.appendChild(empty);
+      return;
+    }
+
+    items.forEach(item => {
+      const card = document.createElement("article");
+      card.className = "gallery-card";
+
+      const img = document.createElement("img");
+      img.src = item.image_key;
+      img.alt = item.title || "Foto Galeri Sekolah";
+      img.loading = "lazy";
+      img.referrerPolicy = "no-referrer";
+
+      img.onerror = function () {
+        this.alt = "Foto tidak dapat dimuat";
+        this.style.display = "none";
+      };
+
+      const info = document.createElement("div");
+      info.className = "gallery-info";
+
+      const title = document.createElement("h3");
+      title.textContent = item.title || "Dokumentasi Sekolah";
+
+      const description = document.createElement("p");
+      description.textContent = item.description || "";
+
+      info.appendChild(title);
+      info.appendChild(description);
+
+      card.appendChild(img);
+      card.appendChild(info);
+
+      gallery.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Galeri:", error);
+
+    gallery.replaceChildren();
+
+    const message = document.createElement("div");
+    message.className = "gallery-empty";
+    message.textContent = "Galeri belum dapat dimuat. Silakan coba kembali.";
+
+    gallery.appendChild(message);
+  }
+}
+
+loadPublicGallery();
 </script>
 </body>
 </html>
