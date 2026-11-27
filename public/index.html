@@ -178,10 +178,12 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
    <h2>Pengumuman</h2>
    <p>Informasi penting untuk warga sekolah</p>
   </div>
+ <div id="announcementsList">
   <div class="card notice">
-   <h3>Informasi Sekolah</h3>
-   <p>Pengumuman resmi sekolah akan ditampilkan di bagian ini.</p>
+    <h3>Memuat pengumuman...</h3>
+    <p>Mohon tunggu sebentar.</p>
   </div>
+</div>
  </div>
 </section>
 
@@ -529,6 +531,81 @@ document.addEventListener("DOMContentLoaded", loadPublicNews);
       </article>`;
   }
 })();
+</script>
+ <script>
+async function loadAnnouncements() {
+  const container = document.getElementById("announcementsList");
+
+  if (!container) return;
+
+  try {
+    const response = await fetch("/api/public/announcements", {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error(result.message || "Gagal memuat pengumuman");
+    }
+
+    container.replaceChildren();
+
+    if (!result.data || result.data.length === 0) {
+      const card = document.createElement("div");
+      card.className = "card notice";
+
+      const title = document.createElement("h3");
+      title.textContent = "Belum Ada Pengumuman";
+
+      const content = document.createElement("p");
+      content.textContent = "Pengumuman resmi sekolah akan ditampilkan di sini.";
+
+      card.append(title, content);
+      container.append(card);
+      return;
+    }
+
+    result.data.forEach(item => {
+      const card = document.createElement("article");
+      card.className = "card notice";
+      card.style.marginBottom = "14px";
+
+      const title = document.createElement("h3");
+      title.textContent = item.title || "Pengumuman Sekolah";
+
+      const content = document.createElement("p");
+      content.textContent = item.content || "";
+      content.style.whiteSpace = "pre-line";
+
+      const date = document.createElement("small");
+      date.style.display = "block";
+      date.style.marginTop = "12px";
+      date.style.color = "#718096";
+
+      const dateValue = item.published_at || item.created_at;
+      date.textContent = dateValue
+        ? new Date(dateValue.replace(" ", "T") + (dateValue.includes("Z") ? "" : "Z"))
+            .toLocaleDateString("id-ID", {
+              day: "numeric",
+              month: "long",
+              year: "numeric"
+            })
+        : "";
+
+      card.append(title, content, date);
+      container.append(card);
+    });
+
+  } catch (error) {
+    console.error("Gagal memuat pengumuman:", error);
+
+    container.textContent = "Pengumuman belum dapat dimuat. Silakan coba kembali.";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadAnnouncements);
 </script>
 </body>
 </html>
