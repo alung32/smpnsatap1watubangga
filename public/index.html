@@ -64,6 +64,36 @@ section{padding:65px 22px;scroll-margin-top:90px}
 .contact .card{color:var(--text)}
 footer{background:#061f40;color:#d7e7fa;text-align:center;padding:25px;font-size:13px}
 footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
+
+.ppdb{background:#f1f6fc}
+.ppdb-intro{max-width:780px;margin:0 auto 28px;text-align:center;color:var(--muted)}
+.ppdb-panel{max-width:900px;margin:auto;background:#fff;border:1px solid #e3ebf5;
+ border-radius:16px;padding:clamp(20px,4vw,36px);box-shadow:0 8px 28px #17385c0b}
+.ppdb-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-bottom:25px}
+.ppdb-info .card{padding:18px}
+.ppdb-form h3{color:var(--navy);margin:8px 0 16px}
+.ppdb-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.ppdb-field{display:flex;flex-direction:column;gap:6px}
+.ppdb-field.full{grid-column:1/-1}
+.ppdb-field label{font-size:13px;font-weight:bold;color:#334b68}
+.ppdb-field input,.ppdb-field select,.ppdb-field textarea{
+ width:100%;border:1px solid #d5dfeb;border-radius:8px;padding:12px;
+ font:inherit;font-size:14px;background:#fff;color:var(--text)
+}
+.ppdb-field textarea{min-height:92px;resize:vertical}
+.ppdb-field input:focus,.ppdb-field select:focus,.ppdb-field textarea:focus{
+ outline:2px solid #b8d8fa;border-color:var(--blue)
+}
+.ppdb-submit{border:0;cursor:pointer;font:inherit}
+.ppdb-submit:disabled{opacity:.65;cursor:wait}
+.ppdb-result{display:none;margin-top:18px;padding:16px;border-radius:10px;background:#eaf7ef;
+ color:#17643a;border:1px solid #b9e3c8}
+.ppdb-result.error{background:#fff1f0;color:#a12622;border-color:#f0c4c1}
+.ppdb-result strong{display:block;font-size:18px;margin-top:4px}
+.ppdb-note{font-size:12px;color:var(--muted);margin-top:12px}
+.ppdb-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+@media(max-width:600px){.ppdb-grid{grid-template-columns:1fr}.ppdb-field.full{grid-column:auto}}
+
 @media(max-width:760px){
  .top{flex-direction:column}
  nav{justify-content:center;gap:12px}
@@ -91,7 +121,7 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
    <a href="#pengumuman">Pengumuman</a>
    <a href="#galeri">Galeri</a>
    <a href="#guru">Guru</a>
-   <a href="#ppdb">PPDB</a>
+   <a href="#ppdb" aria-label="Buka halaman Penerimaan Peserta Didik Baru">PPDB</a>
    <a href="#kontak">Kontak</a>
   </nav>
  </div>
@@ -198,6 +228,71 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
   </div>
  </div>
 </section>
+
+
+<section class="ppdb" id="ppdb">
+ <div class="container">
+  <div class="heading">
+   <h2>Penerimaan Peserta Didik Baru (PPDB)</h2>
+   <p>Informasi dan pendaftaran calon peserta didik SMP Negeri Satap 1 Watubangga</p>
+  </div>
+  <p class="ppdb-intro">Selamat datang di halaman PPDB. Silakan isi formulir dengan data yang benar dan aktifkan nomor telepon orang tua/wali agar pihak sekolah dapat menghubungi calon peserta didik.</p>
+  <div class="ppdb-info">
+   <div class="card"><div class="symbol">📋</div><h3>Lengkapi Data</h3><p>Isi identitas calon peserta didik dan informasi orang tua/wali secara lengkap.</p></div>
+   <div class="card"><div class="symbol">📨</div><h3>Kirim Pendaftaran</h3><p>Setelah formulir dikirim, simpan nomor pendaftaran yang ditampilkan.</p></div>
+   <div class="card"><div class="symbol">🏫</div><h3>Verifikasi Sekolah</h3><p>Panitia sekolah akan memeriksa data dan menghubungi orang tua/wali bila diperlukan.</p></div>
+  </div>
+  <div class="ppdb-panel">
+   <form id="ppdbForm" class="ppdb-form">
+    <h3>Formulir Pendaftaran Calon Peserta Didik</h3>
+    <div class="ppdb-grid">
+     <div class="ppdb-field"><label for="ppdbName">Nama Lengkap Calon Siswa *</label><input id="ppdbName" name="student_name" maxlength="180" required autocomplete="name"></div>
+     <div class="ppdb-field"><label for="ppdbGender">Jenis Kelamin *</label><select id="ppdbGender" name="gender" required><option value="">Pilih jenis kelamin</option><option value="Laki-laki">Laki-laki</option><option value="Perempuan">Perempuan</option></select></div>
+     <div class="ppdb-field"><label for="ppdbBirthPlace">Tempat Lahir</label><input id="ppdbBirthPlace" name="birth_place" maxlength="100"></div>
+     <div class="ppdb-field"><label for="ppdbBirthDate">Tanggal Lahir</label><input id="ppdbBirthDate" name="birth_date" type="date"></div>
+     <div class="ppdb-field"><label for="ppdbSchool">Asal Sekolah *</label><input id="ppdbSchool" name="previous_school" maxlength="220" required placeholder="Nama SD/MI asal"></div>
+     <div class="ppdb-field"><label for="ppdbParent">Nama Orang Tua/Wali *</label><input id="ppdbParent" name="parent_name" maxlength="180" required></div>
+     <div class="ppdb-field"><label for="ppdbPhone">Nomor HP Orang Tua/Wali *</label><input id="ppdbPhone" name="phone" type="tel" maxlength="40" required autocomplete="tel" placeholder="Contoh: 08xxxxxxxxxx"></div>
+     <div class="ppdb-field full"><label for="ppdbAddress">Alamat Lengkap *</label><textarea id="ppdbAddress" name="address" maxlength="2000" required></textarea></div>
+    </div>
+    <div class="ppdb-trap" aria-hidden="true"><label for="ppdbWebsite">Jangan isi kolom ini</label><input id="ppdbWebsite" name="website" tabindex="-1" autocomplete="off"></div>
+    <button class="btn ppdb-submit" id="ppdbSubmit" type="submit">Kirim Pendaftaran</button>
+    <p class="ppdb-note">Tanda (*) wajib diisi. Data pendaftaran digunakan oleh pihak sekolah untuk proses penerimaan peserta didik baru.</p>
+    <div id="ppdbResult" class="ppdb-result" role="status" aria-live="polite"></div>
+   </form>
+  </div>
+ </div>
+</section>
+<script>
+(function(){
+ const form=document.getElementById('ppdbForm');
+ if(!form)return;
+ const submit=document.getElementById('ppdbSubmit');
+ const result=document.getElementById('ppdbResult');
+ form.addEventListener('submit',async function(event){
+  event.preventDefault();
+  result.style.display='none';result.className='ppdb-result';
+  submit.disabled=true;submit.textContent='Mengirim...';
+  const fd=new FormData(form);
+  const payload=Object.fromEntries(fd.entries());
+  try{
+   const response=await fetch('/api/public/ppdb',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    credentials:'same-origin',body:JSON.stringify(payload)
+   });
+   const data=await response.json().catch(()=>({}));
+   if(!response.ok||!data.success)throw new Error(data.message||'Pendaftaran belum dapat dikirim. Silakan coba kembali.');
+   result.className='ppdb-result';
+   result.innerHTML='Pendaftaran berhasil dikirim.<strong>Nomor Pendaftaran: '+String(data.registration_no).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))+'</strong><span>Simpan nomor ini untuk keperluan konfirmasi dengan pihak sekolah.</span>';
+   result.style.display='block';form.reset();
+  }catch(error){
+   result.className='ppdb-result error';result.textContent=error.message||'Terjadi kesalahan saat mengirim pendaftaran.';result.style.display='block';
+  }finally{
+   submit.disabled=false;submit.textContent='Kirim Pendaftaran';
+  }
+ });
+})();
+</script>
 
 <section class="contact" id="kontak">
  <div class="container">
