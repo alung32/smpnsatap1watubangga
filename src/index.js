@@ -468,6 +468,27 @@ export default {
         return json({ success: true, message: "Logout berhasil" }, 200, { "Set-Cookie": clearCookie() });
       }
 
+// PUBLIC TEACHERS — menampilkan data guru aktif pada website.
+if (path === "/api/public/teachers" && method === "GET") {
+  const result = await env.DB.prepare(`
+    SELECT
+      id,
+      name,
+      position,
+      subject,
+      photo_key,
+      bio
+    FROM teachers
+    WHERE is_active = 1
+    ORDER BY sort_order ASC, name COLLATE NOCASE ASC
+  `).all();
+
+  return json({
+    success: true,
+    data: result.results || []
+  });
+}
+
       // PUBLIC PPDB SUBMISSION — stores applicant data without exposing the admin API.
       if (path === "/api/public/ppdb" && method === "POST") {
         const input = await body(request);
