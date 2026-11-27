@@ -525,6 +525,54 @@ export default {
         }, 201);
       }
 
+  // ==========================================
+  // API PUBLIK BERITA SEKOLAH
+  // ==========================================
+  if (path === "/api/public/news" && method === "GET") {
+    const result = await env.DB.prepare(`
+      SELECT
+        id,
+        title,
+        slug,
+        excerpt,
+        image_key,
+        published_at,
+        created_at
+      FROM news
+      WHERE status = 'published'
+      ORDER BY COALESCE(published_at, created_at) DESC, id DESC
+      LIMIT 12
+    `).all();
+
+    return json({
+      success: true,
+      data: result.results || []
+    });
+  }
+
+  // ==========================================
+  // API PUBLIK GALERI SEKOLAH
+  // ==========================================
+  if (path === "/api/public/gallery" && method === "GET") {
+    const result = await env.DB.prepare(`
+      SELECT
+        id,
+        title,
+        description,
+        image_key,
+        category,
+        created_at
+      FROM gallery
+      ORDER BY id DESC
+      LIMIT 24
+    `).all();
+
+    return json({
+      success: true,
+      data: result.results || []
+    });
+  }
+
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
