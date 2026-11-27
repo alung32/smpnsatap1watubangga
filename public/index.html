@@ -93,6 +93,63 @@ section{padding:65px 22px;scroll-margin-top:90px}
  display:grid;place-items:center;color:#416589;font-size:14px;text-align:center;padding:15px}
 .teacher{background:var(--light)}
 .teacherbox{text-align:center}
+ 
+.teacher-card {
+  background: white;
+  border: 1px solid #e9eff7;
+  border-radius: 14px;
+  padding: 25px 20px;
+  text-align: center;
+  box-shadow: 0 5px 22px #17385c0d;
+}
+
+.teacher-card img,
+.teacher-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 15px;
+  background: #eaf3fc;
+}
+
+.teacher-avatar {
+  display: grid;
+  place-items: center;
+  font-size: 38px;
+}
+
+.teacher-card h3 {
+  color: var(--navy);
+  font-size: 17px;
+  margin-bottom: 7px;
+}
+
+.teacher-card .position {
+  color: var(--blue);
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.teacher-card .subject {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+.teacher-card .bio {
+  color: var(--muted);
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.teacher-empty {
+  text-align: center;
+  padding: 25px;
+  color: var(--muted);
+  grid-column: 1 / -1;
+}
+
 .teacherbox .avatar{width:85px;height:85px;border-radius:50%;
  margin:0 auto 15px;background:#d9e9fa;display:grid;place-items:center;font-size:34px}
 .contact{background:var(--navy);color:white}
@@ -241,18 +298,13 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
    <h2>Guru dan Tenaga Kependidikan</h2>
    <p>Para pendidik dan tenaga kependidikan sekolah</p>
   </div>
-  <div class="grid">
-   <div class="card teacherbox">
-    <div class="avatar">👩‍🏫</div>
-    <h3>Data Guru</h3>
-    <p>Daftar nama dan foto guru akan dilengkapi menggunakan data resmi.</p>
-   </div>
-   <div class="card teacherbox">
-    <div class="avatar">👨‍🏫</div>
-    <h3>Tenaga Kependidikan</h3>
-    <p>Informasi tenaga kependidikan sekolah akan ditampilkan di sini.</p>
-   </div>
+  
+<div class="grid" id="teacherList">
+  <div class="teacher-empty">
+    Memuat data guru dan tenaga kependidikan...
   </div>
+</div>
+
  </div>
 </section>
 
@@ -719,5 +771,100 @@ async function loadPublicGallery() {
 
 loadPublicGallery();
 </script>
+ 
+<script>
+async function loadPublicTeachers() {
+  const container = document.getElementById("teacherList");
+
+  if (!container) return;
+
+  try {
+    const response = await fetch("/api/public/teachers", {
+      method: "GET",
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      throw new Error("Gagal mengambil data guru");
+    }
+
+    container.replaceChildren();
+
+    const teachers = Array.isArray(result.data)
+      ? result.data
+      : [];
+
+    if (teachers.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "teacher-empty";
+      empty.textContent = "Belum ada data guru yang ditampilkan.";
+      container.appendChild(empty);
+      return;
+    }
+
+    teachers.forEach(teacher => {
+      const card = document.createElement("article");
+      card.className = "teacher-card";
+
+      if (teacher.photo_key) {
+        const img = document.createElement("img");
+        img.src = teacher.photo_key;
+        img.alt = teacher.name || "Foto guru";
+        img.loading = "lazy";
+        img.referrerPolicy = "no-referrer";
+
+        img.onerror = function() {
+          const avatar = document.createElement("div");
+          avatar.className = "teacher-avatar";
+          avatar.textContent = "👩‍🏫";
+          this.replaceWith(avatar);
+        };
+
+        card.appendChild(img);
+      } else {
+        const avatar = document.createElement("div");
+        avatar.className = "teacher-avatar";
+        avatar.textContent = "👩‍🏫";
+        card.appendChild(avatar);
+      }
+
+      const name = document.createElement("h3");
+      name.textContent = teacher.name || "Nama Guru";
+
+      const position = document.createElement("p");
+      position.className = "position";
+      position.textContent = teacher.position || "Pendidik";
+
+      const subject = document.createElement("p");
+      subject.className = "subject";
+      subject.textContent = teacher.subject || "";
+
+      const bio = document.createElement("p");
+      bio.className = "bio";
+      bio.textContent = teacher.bio || "";
+
+      card.append(name, position, subject, bio);
+      container.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Data Guru:", error);
+
+    container.replaceChildren();
+
+    const message = document.createElement("div");
+    message.className = "teacher-empty";
+    message.textContent =
+      "Data guru belum dapat dimuat. Silakan coba kembali.";
+
+    container.appendChild(message);
+  }
+}
+
+loadPublicTeachers();
+</script>
+
 </body>
 </html>
