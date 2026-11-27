@@ -510,6 +510,26 @@ if (path === "/api/public/news" && method === "GET") {
     data: result.results || []
   });
 }
+      // PENGUMUMAN PUBLIK - hanya menampilkan status published
+if (path === "/api/public/announcements" && method === "GET") {
+  const result = await env.DB.prepare(`
+    SELECT
+      id,
+      title,
+      content,
+      published_at,
+      created_at
+    FROM announcements
+    WHERE status = 'published'
+    ORDER BY COALESCE(published_at, created_at) DESC, id DESC
+    LIMIT 20
+  `).all();
+
+  return json({
+    success: true,
+    data: result.results || []
+  });
+}
       if (path.startsWith("/api/admin/")) {
         const user = await requireLogin(request, env);
         if (!user) return json({ success: false, message: "Silakan login terlebih dahulu" }, 401);
