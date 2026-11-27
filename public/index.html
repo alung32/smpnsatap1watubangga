@@ -260,6 +260,33 @@ footer img{width:55px;height:55px;object-fit:contain;margin-bottom:8px}
     <p class="ppdb-note">Tanda (*) wajib diisi. Data pendaftaran digunakan oleh pihak sekolah untuk proses penerimaan peserta didik baru.</p>
     <div id="ppdbResult" class="ppdb-result" role="status" aria-live="polite"></div>
    </form>
+   <div class="ppdb-panel" style="margin-top:24px">
+  <h3>Cek Hasil Seleksi PPDB</h3>
+  <p>Masukkan nomor pendaftaran untuk melihat hasil seleksi.</p>
+
+  <form id="ppdbCheckForm" class="ppdb-form">
+    <div class="ppdb-field">
+      <label for="ppdbCheckNumber">Nomor Pendaftaran</label>
+      <input
+        id="ppdbCheckNumber"
+        name="registration_no"
+        type="text"
+        placeholder="Contoh: PPDB-20261127-96E47EB5"
+        maxlength="40"
+        required
+      >
+    </div>
+
+    <button class="btn ppdb-submit" type="submit">
+      Cek Hasil Seleksi
+    </button>
+  </form>
+
+  <div id="ppdbCheckResult"
+       class="ppdb-result"
+       role="status"
+       aria-live="polite"></div>
+</div>
   </div>
  </div>
 </section>
